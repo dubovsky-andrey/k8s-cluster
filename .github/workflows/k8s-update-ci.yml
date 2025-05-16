@@ -53,16 +53,18 @@ jobs:
           chmod +x scripts/ci/install_yr.sh
           bash scripts/ci/install_yr.sh
 
-      - id: cfg
-        name: Get latest Kubernetes version
+      - name: Load desired version and label selector
+        id: cfg
         run: |
-          latest=$(curl -s https://dl.k8s.io/release/stable.txt)
-          echo "k8s_latest=${latest}" >> $GITHUB_OUTPUT
+          DESIRED=$(yq '.desiredVersion' configs/k8s-config.yaml)
+          SELECTOR=$(yq -r '.labelSelector // ""' configs/k8s-config.yaml)
+          echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
+          echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
         with:
-          version: ${{ steps.cfg.outputs.k8s_latest }}
+          version: ${{ steps.cfg.outputs.desired }}
 
       - name: Restore kubeconfig
         run: |
