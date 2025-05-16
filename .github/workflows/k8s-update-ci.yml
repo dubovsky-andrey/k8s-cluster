@@ -53,6 +53,12 @@ jobs:
           chmod +x scripts/ci/install_yr.sh
           bash scripts/ci/install_yr.sh
 
+      - id: cfg
+        name: Get latest Kubernetes version
+        run: |
+          latest=$(curl -s https://dl.k8s.io/release/stable.txt)
+          echo "k8s_latest=${latest}" >> $GITHUB_OUTPUT
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
         with:
