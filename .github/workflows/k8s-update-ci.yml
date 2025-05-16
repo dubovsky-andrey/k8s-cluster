@@ -1,0 +1,350 @@
+name: Kubernetes Upgrade
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  check-k8s-version:
+    name: Check latest Kubernetes version
+    runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch latest Kubernetes stable release
+        id: fetch_k8s
+        run: |
+          chmod +x scripts/ci/check_kubernetes_stable_version.sh
+          bash scripts/ci/check_kubernetes_stable_version.sh
+      
+      - name: Write version summary
+        if: always()
+        run: |
+          echo "### Kubernetes version report" >> $GITHUB_STEP_SUMMARY
+          echo "- Latest stable release: ${{ steps.fetch_k8s.outputs.k8s_latest }}" >> $GITHUB_STEP_SUMMARY
+
+  check-upgrade:
+    name: Check Upgrade
+    runs-on: [self-hosted-arm]
+    needs:
+      - check-k8s-version
+    outputs:
+      desired: ${{ steps.cfg.outputs.desired }}
+      node_list: ${{ steps.list-names.outputs.node_list }}
+      need_upgrade: ${{ steps.check.outputs.need_upgrade }}
+      nodes_checked: ${{ steps.list.outputs.count }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          # Install yq for YAML parsing
+          YQ_VER="v4.44.1"
+          ARCH=$(uname -m)
+          if [ "$ARCH" = "x86_64" ]; then
+            YQ_ARCH="amd64"
+          else
+            YQ_ARCH="arm64"
+          fi
+          curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
+          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+
+          # Install kubectl CLI
+          K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+          curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
+          sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+
+      - name: Restore kubeconfig
+        run: |
+          # Decode admin kubeconfig from secret
+          echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
+          chmod 600 $HOME/kubeconfig
+          # Export for all subsequent steps
+          echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+
+      - name: Load desired version and label selector
+        id: cfg
+        run: |
+          DESIRED=$(yq '.desiredVersion' k8s-upgrade-config.yaml)
+          SELECTOR=$(yq -r '.labelSelector // ""' k8s-upgrade-config.yaml)
+          echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
+          echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
+
+      - id: list
+        name: Get list of nodes
+        run: |
+          SEL="${{ steps.cfg.outputs.selector }}"
+          if [ -n "$SEL" ]; then
+            kubectl get nodes -l "$SEL" -o json > nodes.json
+          else
+            kubectl get nodes -o json > nodes.json
+          fi
+          jq -r '.items[].metadata.name' nodes.json > /tmp/nodes.lst
+          echo "count=$(wc -l < /tmp/nodes.lst)" >> $GITHUB_OUTPUT
+
+      - id: list-names
+        name: Collecting node names into a string
+        run: |
+          NODE_LIST=$(paste -sd' ' /tmp/nodes.lst)
+          echo "→ Nodes: $NODE_LIST"
+          echo "node_list=$NODE_LIST" >> $GITHUB_OUTPUT
+
+      - id: check
+        name: Compare kubelet versions
+        run: |
+          DESIRED="${{ steps.cfg.outputs.desired }}"
+          NEED=0
+          while read -r NODE; do
+            CURRENT=$(kubectl get node "$NODE" -o jsonpath='{.status.nodeInfo.kubeletVersion}')
+            printf "Node %-20s : current=%s desired=%s\n" "$NODE" "$CURRENT" "$DESIRED"
+            if [ "$CURRENT" != "$DESIRED" ]; then
+              echo "::warning ::$NODE requires upgrade to $DESIRED"
+              NEED=1
+            fi
+          done < /tmp/nodes.lst
+          echo "need_upgrade=$NEED" >> $GITHUB_OUTPUT
+
+      - name: Write summary
+        if: always()
+        run: |
+          echo "### Kubernetes upgrade report" >> $GITHUB_STEP_SUMMARY
+          echo "- Nodes checked: ${{ steps.list.outputs.count }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.need_upgrade }}" = "1" ]; then
+            echo "-  Upgrade needed = True" >> $GITHUB_STEP_SUMMARY
+            echo "-  Upgrade needed to ${{ steps.cfg.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "-  All nodes on version ${{ steps.cfg.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  # backup-etcd:
+  #   name: Backup etcd Snapshot
+  #   needs:
+  #     - check-k8s-version
+  #   runs-on: [self-hosted-arm]
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get update -y
+  #         sudo apt-get install -y jq etcd-client
+  #         YQ_VER="v4.44.1"
+  #         ARCH=$(uname -m)
+  #         case "$ARCH" in
+  #           x86_64)
+  #             YQ_ARCH="amd64"
+  #             ;;
+  #           aarch64|arm64)
+  #             YQ_ARCH="arm64"
+  #             ;;
+  #           *)
+  #             echo "Error: Unsupported architecture: $ARCH" >&2
+  #             exit 1
+  #             ;;
+  #         esac
+  #         curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
+  #         sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+  #         K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+  #         curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
+  #         sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+
+  #     - name: Restore admin kubeconfig
+  #       run: |
+  #         echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
+  #         chmod 600 $HOME/kubeconfig
+  #         echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+
+  #     - name: Setup SSH key
+  #       shell: bash
+  #       run: |
+  #         # create ~/.ssh and past secret
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+  #         chmod 600 ~/.ssh/id_rsa
+
+  #     - name: Sync etcdctl version from control-plane
+  #       shell: bash
+  #       run: |
+  #         SSH_USER="${{ secrets.SSH_USER }}"
+  #         PRIMARY=$(kubectl get nodes \
+  #           -l node-role.kubernetes.io/control-plane \
+  #           -o jsonpath='{.items[0].metadata.name}')
+
+  #         # Get etcdctl version from node
+  #         ETCD_VER=$(ssh -o StrictHostKeyChecking=no "$SSH_USER@$PRIMARY" \
+  #           "etcdctl version | head -n1 | awk '{print \$3}'")
+  #         echo "→ Remote etcdctl version: $ETCD_VER"
+  #         if [[ -z "$ETCD_VER" ]]; then
+  #           echo " Failed to get etcdctl version" >&2
+  #           exit 1
+  #         fi
+
+  #         # Defining  runner architecture
+  #         ARCH=$(uname -m)
+  #         case "$ARCH" in
+  #           x86_64) PLATFORM="linux-amd64";;
+  #           aarch64|arm64) PLATFORM="linux-arm64";;
+  #           *) echo "Unsupported arch: $ARCH" >&2; exit 1;;
+  #         esac
+
+  #         # 3) Download and extract etcdctl
+  #         DOWNLOAD_URL="https://github.com/etcd-io/etcd/releases/download/v${ETCD_VER}/etcd-v${ETCD_VER}-${PLATFORM}.tar.gz"
+  #         echo "→ Downloading etcdctl from $DOWNLOAD_URL"
+  #         curl -sfL "$DOWNLOAD_URL" -o etcd-${ETCD_VER}.tgz
+  #         tar -xzf etcd-${ETCD_VER}.tgz -C /tmp
+  #         sudo mv /tmp/etcd-v${ETCD_VER}-${PLATFORM}/etcdctl /usr/local/bin/etcdctl
+  #         sudo chmod +x /usr/local/bin/etcdctl
+
+  #         echo " etcdctl v${ETCD_VER} installed on runner"
+
+  #     - name: Fetch latest etcd snapshot from control-plane
+  #       shell: bash
+  #       run: |
+  #         SSH_USER="${{ secrets.SSH_USER }}"
+  #         PRIMARY=$(kubectl get nodes \
+  #           -l node-role.kubernetes.io/control-plane \
+  #           -o jsonpath='{.items[0].metadata.name}')
+
+  #         # Find the file on the node
+  #         REMOTE_SNAPSHOT=$(ssh -o StrictHostKeyChecking=no "$SSH_USER@$PRIMARY" \
+  #           "ls /tmp/etcd-snapshot-*.db | tail -n1")
+  #         echo "→ Remote snapshot: $REMOTE_SNAPSHOT"
+
+  #         # 2) Download spapshot
+  #         LOCAL_FILE=$(basename "$REMOTE_SNAPSHOT")
+  #         ssh -o StrictHostKeyChecking=no "$SSH_USER@$PRIMARY" \
+  #           "sudo cat $REMOTE_SNAPSHOT" > "$LOCAL_FILE"
+  #         echo "Snapshot downloaded to runner as $LOCAL_FILE"
+
+  #     - name: Verify snapshot locally
+  #       shell: bash
+  #       run: |
+  #         SNAPSHOT=$(ls etcd-snapshot-*.db | head -n1)
+  #         echo "→ Verifying $SNAPSHOT"
+
+  #         sudo apt-get update && sudo apt-get install -y etcd-client
+  #         export ETCDCTL_API=3
+
+  #         # Status
+  #         etcdctl snapshot status "$SNAPSHOT" || {
+  #           echo " status failed"; exit 1
+  #         }
+
+  #         # Restore to local folder /tmp/etcd-verify
+  #         rm -rf /tmp/etcd-verify
+  #         etcdctl snapshot restore "$SNAPSHOT" \
+  #           --data-dir /tmp/etcd-verify \
+  #           --name test-etcd \
+  #           --initial-cluster test-etcd=http://localhost:2380 \
+  #           --initial-cluster-token test-token \
+  #           --initial-advertise-peer-urls http://localhost:2380 || {
+  #           echo " restore failed"; exit 1
+  #         }
+
+  #         echo " Snapshot verification passed"
+
+  #     - name: Upload etcd snapshot artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: etcd-snapshot
+  #         path: etcd-snapshot-*.db
+
+  # upgrade-nodes:
+  #   name: Upgrade Kubernetes Nodes
+  #   needs:
+  #     - check-upgrade
+  #     - backup-etcd
+  #   if: needs.check-upgrade.outputs.need_upgrade == '1'
+  #   runs-on: [self-hosted-arm]
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Update and upgrade
+  #       run: |
+  #         chmod +x scripts/update_packages.sh
+  #         scripts/update_packages.sh
+
+  #     - name: Install dependencies
+  #       run: |
+  #         sudo apt-get update -y
+  #         sudo apt-get install -y jq
+  #         YQ_VER="v4.44.1"
+  #         ARCH=$(uname -m)
+  #         if [ "$ARCH" = "x86_64" ]; then YQ_ARCH="amd64"; else YQ_ARCH="arm64"; fi
+  #         curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
+  #         sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+  #         K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+  #         curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
+  #         sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+  #         kubectl version
+  #         echo "-  Upgrade needed to ${{ steps.cfg.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
+
+  #     - name: Restore admin kubeconfig
+  #       run: |
+  #         echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
+  #         chmod 600 $HOME/kubeconfig
+  #         echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+
+  #     - name: Upgrade each node one by one
+  #       shell: bash
+  #       run: |
+  #         # Get NODE list
+  #         NODE_LIST="${{ needs.check-upgrade.outputs.node_list }}"
+  #         echo "→ Nodes to upgrade: $NODE_LIST"
+
+  #     - name: Dry-run show upgrade commands
+  #       shell: bash
+  #       run: |
+  #         NODE_LIST="${{ needs.check-upgrade.outputs.node_list }}"
+  #         DESIRED="${{ needs.check-upgrade.outputs.desired }}"
+  #         # remove the leading "v"
+  #         VERSION="${DESIRED#v}"
+  #         echo "→ Dry run for version: $VERSION"
+  #         echo "-  Upgrade needed to ${{ needs.check-upgrade.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
+  #         for NODE in $NODE_LIST; do
+  #           echo "---- $NODE ----"
+  #           echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo kubectl drain $NODE --ignore-daemonsets --delete-emptydir-data --dry-run=client"
+  #           echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo apt-get update -y"
+  #           echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo apt-get install -y kubeadm=${VERSION}-00"
+  #           echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo kubeadm upgrade node --dry-run"
+  #           echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo apt-get install -y kubelet=${VERSION}-00 kubectl=${VERSION}-00"
+  #           echo
+  #         done
+
+  #     - name: Upgrade packages
+  #       run: |
+  #         set -euo pipefail
+  #         NODE_LIST="${{ needs.check-upgrade.outputs.node_list }}"
+  #         for NODE in $NODE_LIST; do
+  #           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@$NODE \
+  #             echo "ssh ${{ secrets.SSH_USER }}@$NODE sudo apt-get update -y"
+  #         done
+
+  #     - name: Upgrade each node one by one
+  #       run: |
+  #         set -euo pipefail
+  #         for NODE in ${{ steps.load-nodes.outputs.nodes }}; do
+  #           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@$NODE << 'EOF'
+  #             sudo kubectl drain $NODE --ignore-daemonsets --delete-emptydir-data
+  #             sudo apt-get update -y
+  #             sudo apt-get install -y kubeadm=${{ needs.check-upgrade.outputs.desired }}-00
+  #             sudo kubeadm upgrade node
+  #             sudo apt-get install -y kubelet=${{ needs.check-upgrade.outputs.desired }}-00 kubectl=${{ needs.check-upgrade.outputs.desired }}-00
+  #             sudo systemctl restart kubelet
+  #             sudo kubectl uncordon $NODE
+  #           EOF
+  #         done
