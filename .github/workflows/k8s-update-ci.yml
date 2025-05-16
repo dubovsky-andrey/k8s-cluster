@@ -50,15 +50,8 @@ jobs:
       - name: Install dependencies
         run: |
           # Install yq for YAML parsing
-          YQ_VER="v4.44.1"
-          ARCH=$(uname -m)
-          if [ "$ARCH" = "x86_64" ]; then
-            YQ_ARCH="amd64"
-          else
-            YQ_ARCH="arm64"
-          fi
-          curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
-          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+          chmod +x scripts/ci/install_yr.sh
+          bash scripts/ci/install_yr.sh
 
           # Install kubectl CLI
           K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
