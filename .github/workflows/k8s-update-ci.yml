@@ -25,7 +25,7 @@ jobs:
         run: |
           chmod +x scripts/ci/check_kubernetes_stable_version.sh
           bash scripts/ci/check_kubernetes_stable_version.sh
-      
+
       - name: Write version summary
         if: always()
         run: |
@@ -76,8 +76,8 @@ jobs:
       - name: Load desired version and label selector
         id: cfg
         run: |
-          DESIRED=$(yq '.desiredVersion' k8s-upgrade-config.yaml)
-          SELECTOR=$(yq -r '.labelSelector // ""' k8s-upgrade-config.yaml)
+          DESIRED=$(yq '.desiredVersion' configs/k8s-config.yaml)
+          SELECTOR=$(yq -r '.labelSelector // ""' configs/k8s-config.yaml)
           echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
           echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
 
