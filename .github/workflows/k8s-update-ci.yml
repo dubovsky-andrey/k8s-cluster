@@ -74,14 +74,6 @@ jobs:
           # Export for all subsequent steps
           echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
 
-      - name: Load desired version and label selector
-        id: cfg
-        run: |
-          DESIRED=$(yq '.desiredVersion' configs/k8s-config.yaml)
-          SELECTOR=$(yq -r '.labelSelector // ""' configs/k8s-config.yaml)
-          echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
-          echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
-
       - id: list
         name: Get list of nodes
         run: |
