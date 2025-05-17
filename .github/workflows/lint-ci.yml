@@ -2,7 +2,7 @@ name: CI Lint
 
 on:
   push:
-    branches: [dev]
+    branches: [main, dev, stage]
   pull_request:
 
 env:
