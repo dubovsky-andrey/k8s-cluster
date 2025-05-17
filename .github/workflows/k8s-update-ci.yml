@@ -151,10 +151,10 @@ jobs:
               ;;
           esac
           curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
-          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+          install -m 0755 /tmp/yq /usr/local/bin/yq
           K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
           curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
-          sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+          install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 
   #     - name: Restore admin kubeconfig
   #       run: |
