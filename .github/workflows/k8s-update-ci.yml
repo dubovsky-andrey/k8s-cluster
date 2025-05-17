@@ -134,22 +134,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y jq etcd-client
-          YQ_VER="v4.44.1"
-          ARCH=$(uname -m)
-          case "$ARCH" in
-            x86_64)
-              YQ_ARCH="amd64"
-              ;;
-            aarch64|arm64)
-              YQ_ARCH="arm64"
-              ;;
-            *)
-              echo "Error: Unsupported architecture: $ARCH" >&2
-              exit 1
-              ;;
-          esac
+          # Install yq for YAML parsing
+          chmod +x scripts/ci/install_yr.sh
+          bash scripts/ci/install_yr.sh
+
           curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
           install -m 0755 /tmp/yq /usr/local/bin/yq
           K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
