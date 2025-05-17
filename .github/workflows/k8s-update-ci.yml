@@ -3,6 +3,7 @@ name: Kubernetes Upgrade
 on:
   push:
     branches: [dev]
+  pull_request:
   workflow_dispatch:
   schedule:
     - cron: "0 8 * * *"
