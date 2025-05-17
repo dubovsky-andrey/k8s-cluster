@@ -36,6 +36,8 @@ jobs:
   check-upgrade:
     name: Check Upgrade
     runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
     needs:
       - check-k8s-version
     outputs:
@@ -126,6 +128,8 @@ jobs:
     needs:
       - check-k8s-version
     runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
