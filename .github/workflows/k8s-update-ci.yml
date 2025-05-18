@@ -108,34 +108,32 @@ jobs:
           chmod +x scripts/ci/check_update_summary.sh
           scripts/ci/check_update_summary.sh
 
-  # backup-etcd:
-  #   name: Backup etcd Snapshot
-  #   needs:
-  #     - check-k8s-version
-  #   runs-on: [self-hosted-arm]
-  #   container:
-  #     image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  backup-etcd:
+    name: Backup etcd Snapshot
+    needs:
+      - check-k8s-version
+    runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Install dependencies
-  #       run: |
-  #         # Install yq for YAML parsing
-  #         chmod +x scripts/ci/install_yr.sh
-  #         bash scripts/ci/install_yr.sh
+      - name: Install dependencies
+        run: |
+          # Install yq for YAML parsing
+          chmod +x scripts/ci/install_yr.sh
+          bash scripts/ci/install_yr.sh
+          echo "kubectl version"
+          echo "yq version"
 
-  #         curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
-  #         install -m 0755 /tmp/yq /usr/local/bin/yq
-  #         K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
-  #         curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
-  #         install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
-
-  #     - name: Restore admin kubeconfig
-  #       run: |
-  #         echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
-  #         chmod 600 $HOME/kubeconfig
-  #         echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+      - name: Decode kubeconfig
+        shell: bash
+        env:
+          ADMIN_KUBECONFIG_B64: ${{ secrets.ADMIN_KUBECONFIG_B64 }}
+        run: |
+          chmod +x scripts/ci/decode_kube_config.sh
+          scripts/ci/decode_kube_config.sh
 
   #     - name: Setup SSH key
   #       shell: bash
