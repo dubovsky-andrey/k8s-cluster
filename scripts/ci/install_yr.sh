@@ -7,7 +7,6 @@ else
   YQ_ARCH="arm64"
 fi
 
-# Эта ссылка всегда отдаёт последний релиз yq для нужной архитектуры
 URL="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${YQ_ARCH}"
 
 curl -fsSL "$URL" -o /tmp/yq
