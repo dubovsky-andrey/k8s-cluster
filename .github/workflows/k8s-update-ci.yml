@@ -121,6 +121,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Update and Install dependencies
+        shell: bash
         run: |
           # Update
           chmod +x scripts/ci/update_packages.sh
@@ -132,11 +133,15 @@ jobs:
 
           # Install yq for YAML parsing
           chmod +x scripts/ci/install_yr.sh
-          bash scripts/ci/install_yr.sh
+          scripts/ci/install_yr.sh
 
           # Install kubectl
           chmod +x scripts/ci/install_kubctl.sh
-          bash scripts/ci/install_kubctl.sh
+          scripts/ci/install_kubctl.sh
+
+          # Install ssh
+          chmod +x scripts/ci/install_ssh_client.sh
+          scripts/ci/install_ssh_client.sh
 
       - name: Decode kubeconfig
         shell: bash
