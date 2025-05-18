@@ -63,7 +63,7 @@ jobs:
           SELECTOR=$(yq -r '.labelSelector // ""' configs/k8s-config.yaml)
           echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
           echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
-          echo "test
+          echo "test"
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
