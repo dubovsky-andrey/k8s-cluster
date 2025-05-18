@@ -63,7 +63,6 @@ jobs:
           SELECTOR=$(yq -r '.labelSelector // ""' configs/k8s-config.yaml)
           echo "desired=$DESIRED" >> "$GITHUB_OUTPUT"
           echo "selector=$SELECTOR" >> "$GITHUB_OUTPUT"
-          echo "test"
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
@@ -72,11 +71,8 @@ jobs:
 
       - name: Restore kubeconfig
         run: |
-          # Decode admin kubeconfig from secret
-          echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
-          chmod 600 $HOME/kubeconfig
-          # Export for all subsequent steps
-          echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+          chmod +x scripts/ci/decode_kube_config.sh
+          bash scripts/ci/decode_kube_config.sh
 
       - id: list
         name: Get list of nodes
