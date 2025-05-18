@@ -59,8 +59,8 @@ jobs:
       - name: Get desired version and label selector
         id: config
         run: |
-          chmod +x scripts/ci/desire_versiuon.sh
-          scripts/ci/desire_versiuon.sh
+          chmod +x scripts/ci/desire_kubernetes_version.sh
+          scripts/ci/desire_kubernetes_version.sh
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
@@ -77,15 +77,11 @@ jobs:
 
       - id: list
         name: Get list of nodes
+        env:
+          SEL: ${{ steps.config.outputs.selector }}
         run: |
-          SEL="${{ steps.config.outputs.selector }}"
-          if [ -n "$SEL" ]; then
-            kubectl get nodes -l "$SEL" -o json > nodes.json
-          else
-            kubectl get nodes -o json > nodes.json
-          fi
-          jq -r '.items[].metadata.name' nodes.json > /tmp/nodes.lst
-          echo "count=$(wc -l < /tmp/nodes.lst)" >> $GITHUB_OUTPUT
+          chmod +x scripts/ci/get_list_of_nodes.sh
+          scripts/ci/get_list_of_nodes.sh
 
       - id: list-names
         name: Collecting node names into a string
