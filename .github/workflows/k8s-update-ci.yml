@@ -1,8 +1,6 @@
 name: Kubernetes Upgrade
 
 on:
-  push:
-    branches: [dev]
   pull_request:
   workflow_dispatch:
   schedule:
@@ -36,6 +34,8 @@ jobs:
   check-upgrade:
     name: Check Upgrade
     runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
     needs:
       - check-k8s-version
     outputs:
@@ -121,38 +121,28 @@ jobs:
             echo "-  All nodes on version ${{ steps.cfg.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
           fi
 
-  # backup-etcd:
-  #   name: Backup etcd Snapshot
-  #   needs:
-  #     - check-k8s-version
-  #   runs-on: [self-hosted-arm]
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+  backup-etcd:
+    name: Backup etcd Snapshot
+    needs:
+      - check-k8s-version
+    runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Install dependencies
-  #       run: |
-  #         sudo apt-get update -y
-  #         sudo apt-get install -y jq etcd-client
-  #         YQ_VER="v4.44.1"
-  #         ARCH=$(uname -m)
-  #         case "$ARCH" in
-  #           x86_64)
-  #             YQ_ARCH="amd64"
-  #             ;;
-  #           aarch64|arm64)
-  #             YQ_ARCH="arm64"
-  #             ;;
-  #           *)
-  #             echo "Error: Unsupported architecture: $ARCH" >&2
-  #             exit 1
-  #             ;;
-  #         esac
-  #         curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
-  #         sudo install -m 0755 /tmp/yq /usr/local/bin/yq
-  #         K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
-  #         curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
-  #         sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+      - name: Install dependencies
+        run: |
+          # Install yq for YAML parsing
+          chmod +x scripts/ci/install_yr.sh
+          bash scripts/ci/install_yr.sh
+
+          curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
+          install -m 0755 /tmp/yq /usr/local/bin/yq
+          K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
+          curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
+          install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
 
   #     - name: Restore admin kubeconfig
   #       run: |
