@@ -111,6 +111,7 @@ jobs:
   backup-etcd:
     name: Backup etcd Snapshot
     needs:
+      - check-upgrade
       - check-k8s-version
     runs-on: [self-hosted-arm]
     container:
@@ -140,14 +141,16 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
+          chmod +x scripts/ci/setup_ssh_key.sh
+          scripts/ci/setup_ssh_key.sh
 
-  #     - name: Sync etcdctl version from control-plane
-  #       shell: bash
-  #       run: |
-  #         SSH_USER="${{ secrets.SSH_USER }}"
-  #         PRIMARY=$(kubectl get nodes \
-  #           -l node-role.kubernetes.io/control-plane \
-  #           -o jsonpath='{.items[0].metadata.name}')
+      - name: Sync etcdctl version from control-plane
+        shell: bash
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          chmod +x scripts/ci/sync_etcdctl_version.sh
+          scripts/ci/sync_etcdctl_version.sh
 
   #         # Get etcdctl version from node
   #         ETCD_VER=$(ssh -o StrictHostKeyChecking=no "$SSH_USER@$PRIMARY" \
