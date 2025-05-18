@@ -120,8 +120,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Update and Install dependencies
         run: |
+          # Update
+          chmod +x scripts/update_packages.sh
+          scripts/update_packages.sh
+
+          # Install etcd
+          chmod +x scripts/install_etcd_client.sh
+          scripts/install_etcd_client.sh
+
           # Install yq for YAML parsing
           chmod +x scripts/ci/install_yr.sh
           bash scripts/ci/install_yr.sh
@@ -162,30 +170,11 @@ jobs:
           chmod +x scripts/ci/fetch_latest_etcd_spanshot.sh
           scripts/ci/fetch_latest_etcd_spanshot.sh
 
-  #     - name: Verify snapshot locally
-  #       shell: bash
-  #       run: |
-  #         SNAPSHOT=$(ls etcd-snapshot-*.db | head -n1)
-  #         echo "→ Verifying $SNAPSHOT"
-
-  #         sudo apt-get update && sudo apt-get install -y etcd-client
-  #         export ETCDCTL_API=3
-
-  #         # Status
-  #         etcdctl snapshot status "$SNAPSHOT" || {
-  #           echo " status failed"; exit 1
-  #         }
-
-  #         # Restore to local folder /tmp/etcd-verify
-  #         rm -rf /tmp/etcd-verify
-  #         etcdctl snapshot restore "$SNAPSHOT" \
-  #           --data-dir /tmp/etcd-verify \
-  #           --name test-etcd \
-  #           --initial-cluster test-etcd=http://localhost:2380 \
-  #           --initial-cluster-token test-token \
-  #           --initial-advertise-peer-urls http://localhost:2380 || {
-  #           echo " restore failed"; exit 1
-  #         }
+      - name: Verify snapshot locally
+        shell: bash
+        run: |
+          chmod +x scripts/verify_chapshot.sh
+          scripts/verify_chapshot.sh
 
   #         echo " Snapshot verification passed"
 
