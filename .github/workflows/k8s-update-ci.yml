@@ -130,8 +130,6 @@ jobs:
           chmod +x scripts/ci/install_kubctl.sh
           bash scripts/ci/install_kubctl.sh
 
-          echo "yq version"
-
       - name: Decode kubeconfig
         shell: bash
         env:
