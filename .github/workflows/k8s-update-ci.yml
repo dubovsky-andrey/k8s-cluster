@@ -100,15 +100,13 @@ jobs:
 
       - name: Write summary
         if: always()
+        env:
+          DESIRED: ${{ steps.config.outputs.desired }}
+          NODES_NEED_UPGRADE: ${{ steps.check.outputs.need_upgrade }}
+          NODES_LIST_COUNT: ${{ steps.list.outputs.count }}
         run: |
-          echo "### Kubernetes upgrade report" >> $GITHUB_STEP_SUMMARY
-          echo "- Nodes checked: ${{ steps.list.outputs.count }}" >> $GITHUB_STEP_SUMMARY
-          if [ "${{ steps.check.outputs.need_upgrade }}" = "1" ]; then
-            echo "-  Upgrade needed = True" >> $GITHUB_STEP_SUMMARY
-            echo "-  Upgrade needed to ${{ steps.config.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "-  All nodes on version ${{ steps.config.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
-          fi
+          chmod +x scripts/ci/check_update_summary.sh
+          scripts/ci/check_update_summary.sh
 
   # backup-etcd:
   #   name: Backup etcd Snapshot
