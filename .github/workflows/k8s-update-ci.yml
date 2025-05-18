@@ -135,13 +135,11 @@ jobs:
           chmod +x scripts/ci/decode_kube_config.sh
           scripts/ci/decode_kube_config.sh
 
-  #     - name: Setup SSH key
-  #       shell: bash
-  #       run: |
-  #         # create ~/.ssh and past secret
-  #         mkdir -p ~/.ssh
-  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-  #         chmod 600 ~/.ssh/id_rsa
+      - name: Setup SSH key
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
 
   #     - name: Sync etcdctl version from control-plane
   #       shell: bash

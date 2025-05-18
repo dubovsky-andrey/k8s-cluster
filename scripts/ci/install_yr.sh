@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then
