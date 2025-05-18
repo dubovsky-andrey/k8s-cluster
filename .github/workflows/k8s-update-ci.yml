@@ -123,12 +123,12 @@ jobs:
       - name: Update and Install dependencies
         run: |
           # Update
-          chmod +x scripts/update_packages.sh
-          scripts/update_packages.sh
+          chmod +x scripts/ci/update_packages.sh
+          scripts/ci/update_packages.sh
 
           # Install etcd
-          chmod +x scripts/install_etcd_client.sh
-          scripts/install_etcd_client.sh
+          chmod +x scripts/ci/install_etcd_client.sh
+          scripts/ci/install_etcd_client.sh
 
           # Install yq for YAML parsing
           chmod +x scripts/ci/install_yr.sh
@@ -184,50 +184,50 @@ jobs:
   #         name: etcd-snapshot
   #         path: etcd-snapshot-*.db
 
-  # upgrade-nodes:
-  #   name: Upgrade Kubernetes Nodes
-  #   needs:
-  #     - check-upgrade
-  #     - backup-etcd
-  #   if: needs.check-upgrade.outputs.need_upgrade == '1'
-  #   runs-on: [self-hosted-arm]
+  upgrade-nodes:
+    name: Upgrade Kubernetes Nodes
+    needs:
+      - check-upgrade
+      - backup-etcd
+    if: needs.check-upgrade.outputs.need_upgrade == '1'
+    runs-on: [self-hosted-arm]
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Update and upgrade
-  #       run: |
-  #         chmod +x scripts/update_packages.sh
-  #         scripts/update_packages.sh
+      - name: Update and Install dependencies
+        run: |
+          # Update
+          chmod +x scripts/ci/update_packages.sh
+          scripts/ci/update_packages.sh
 
-  #     - name: Install dependencies
-  #       run: |
-  #         sudo apt-get update -y
-  #         sudo apt-get install -y jq
-  #         YQ_VER="v4.44.1"
-  #         ARCH=$(uname -m)
-  #         if [ "$ARCH" = "x86_64" ]; then YQ_ARCH="amd64"; else YQ_ARCH="arm64"; fi
-  #         curl -L "https://github.com/mikefarah/yq/releases/download/${YQ_VER}/yq_linux_${YQ_ARCH}" -o /tmp/yq
-  #         sudo install -m 0755 /tmp/yq /usr/local/bin/yq
-  #         K_VER=$(curl -sSL https://dl.k8s.io/release/stable.txt)
-  #         curl -sSL "https://dl.k8s.io/release/${K_VER}/bin/linux/${YQ_ARCH}/kubectl" -o /tmp/kubectl
-  #         sudo install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
-  #         kubectl version
-  #         echo "-  Upgrade needed to ${{ steps.config.outputs.desired }}" >> $GITHUB_STEP_SUMMARY
+          # Install etcd
+          chmod +x scripts/ci/install_etcd_client.sh
+          scripts/ci/install_etcd_client.sh
 
-  #     - name: Restore admin kubeconfig
-  #       run: |
-  #         echo "${{ secrets.ADMIN_KUBECONFIG_B64 }}" | base64 -d > $HOME/kubeconfig
-  #         chmod 600 $HOME/kubeconfig
-  #         echo "KUBECONFIG=$HOME/kubeconfig" >> $GITHUB_ENV
+          # Install yq for YAML parsing
+          chmod +x scripts/ci/install_yr.sh
+          bash scripts/ci/install_yr.sh
 
-  #     - name: Upgrade each node one by one
-  #       shell: bash
-  #       run: |
-  #         # Get NODE list
-  #         NODE_LIST="${{ needs.check-upgrade.outputs.node_list }}"
-  #         echo "→ Nodes to upgrade: $NODE_LIST"
+          # Install kubectl
+          chmod +x scripts/ci/install_kubctl.sh
+          bash scripts/ci/install_kubctl.sh
+
+      - name: Decode kubeconfig
+        shell: bash
+        env:
+          ADMIN_KUBECONFIG_B64: ${{ secrets.ADMIN_KUBECONFIG_B64 }}
+        run: |
+          chmod +x scripts/ci/decode_kube_config.sh
+          scripts/ci/decode_kube_config.sh
+
+      - name: Upgrade each node one by one
+        shell: bash
+        run: |
+          # Get NODE list
+          NODE_LIST="${{ needs.check-upgrade.outputs.node_list }}"
+          echo "→ Nodes to upgrade: $NODE_LIST"
 
   #     - name: Dry-run show upgrade commands
   #       shell: bash
