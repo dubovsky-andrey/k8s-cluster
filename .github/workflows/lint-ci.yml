@@ -1,16 +1,12 @@
 name: CI Lint
 
 on:
-  push:
-    branches: [dev]
   pull_request:
-    
 
 env:
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: "3.11"
 
 jobs:
-  
   lint-no-cyrillic-and-emoji:
     runs-on: self-hosted-arm
     container:
