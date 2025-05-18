@@ -171,7 +171,7 @@ jobs:
   #           *) echo "Unsupported arch: $ARCH" >&2; exit 1;;
   #         esac
 
-  #         # 3) Download and extract etcdctl
+  #         # Download and extract etcdctl
   #         DOWNLOAD_URL="https://github.com/etcd-io/etcd/releases/download/v${ETCD_VER}/etcd-v${ETCD_VER}-${PLATFORM}.tar.gz"
   #         echo "→ Downloading etcdctl from $DOWNLOAD_URL"
   #         curl -sfL "$DOWNLOAD_URL" -o etcd-${ETCD_VER}.tgz
