@@ -69,10 +69,13 @@ jobs:
         with:
           version: ${{ steps.cfg.outputs.desired }}
 
-      - name: Restore kubeconfig
+      - name: Decode kubeconfig
+        shell: bash
+        env:
+          ADMIN_KUBECONFIG_B64: ${{ secrets.ADMIN_KUBECONFIG_B64 }}
         run: |
           chmod +x scripts/ci/decode_kube_config.sh
-          bash scripts/ci/decode_kube_config.sh
+          scripts/ci/decode_kube_config.sh
 
       - id: list
         name: Get list of nodes
