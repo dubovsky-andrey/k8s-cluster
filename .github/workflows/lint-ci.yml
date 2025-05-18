@@ -1,6 +1,8 @@
 name: CI Lint
 
 on:
+  push:
+    branches: [stage]
   pull_request:
 
 env:

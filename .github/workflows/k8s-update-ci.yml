@@ -1,6 +1,8 @@
 name: Kubernetes Upgrade
 
 on:
+  push:
+    branches: [stage]
   pull_request:
   workflow_dispatch:
   schedule:
