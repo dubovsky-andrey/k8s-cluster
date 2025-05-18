@@ -125,6 +125,11 @@ jobs:
           # Install yq for YAML parsing
           chmod +x scripts/ci/install_yr.sh
           bash scripts/ci/install_yr.sh
+
+          # Install kubectl
+          chmod +x scripts/ci/install_kubctl.sh
+          bash scripts/ci/install_kubctl.sh
+
           echo "yq version"
 
       - name: Decode kubeconfig
