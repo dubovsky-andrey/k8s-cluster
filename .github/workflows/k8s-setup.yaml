@@ -20,4 +20,5 @@ jobs:
 
       - name: Check node avalability
         run: |
+          sudo apt update && apt install iputils-ping \
           ping k8s-node-4
