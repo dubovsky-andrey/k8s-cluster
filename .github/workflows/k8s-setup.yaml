@@ -1,0 +1,23 @@
+name: Kubernetes setup
+
+on:
+  push:
+    branches: [setup]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check-k8s-version:
+    name: Check latest Kubernetes version
+    runs-on: [self-hosted-arm]
+    container:
+      image: ghcr.io/dubovsky-andrey/k8s-ubuntu:latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check node avalability
+        run: |
+          ping k8s-node-4
