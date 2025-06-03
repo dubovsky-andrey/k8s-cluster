@@ -20,5 +20,4 @@ jobs:
 
       - name: Check node avalability
         run: |
-          apt update && apt install -y iputils-ping
           ping -c 8 k8s-node-4
