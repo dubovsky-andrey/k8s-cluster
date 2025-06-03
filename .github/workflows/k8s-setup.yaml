@@ -26,7 +26,7 @@ jobs:
         run: |
           ansible-playbook \
             -i inventory.ini \
-            playbooks/setup-ssh.yml \
+            ansible/playbooks/setup-ssh.yml \
             --extra-vars "\
             ansible_ssh_pass=${{ secrets.SSH_PASS }} \
             ssh_public_key='${{ secrets.SSH_SETUP_PUB_KEY }}' \
