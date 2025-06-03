@@ -32,6 +32,7 @@ jobs:
           export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook \
             -i ansible/inventory.ini \
+            -u ${{ secrets.SSH_USER }} \
             ansible/playbooks/setup-ssh.yml \
             --extra-vars "\
             ansible_ssh_pass=${{ secrets.SSH_PASS }} \
