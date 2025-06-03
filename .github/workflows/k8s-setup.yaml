@@ -29,6 +29,7 @@ jobs:
 
       - name: Run Ansible Playbook (deploy SSH key + disable password login)
         run: |
+          export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook \
             -i ansible/inventory.ini \
             ansible/playbooks/setup-ssh.yml \
