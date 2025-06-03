@@ -21,8 +21,10 @@ jobs:
       - name: Check ICMP (ping) to k8s-node-4
         run: |
           ping -c 8 k8s-node-4
-          touch ~/.ssh/known_hosts
+          mkdir -p ~/.ssh
           ssh-keyscan -H k8s-node-4 >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 644 ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook (deploy SSH key + disable password login)
         run: |
