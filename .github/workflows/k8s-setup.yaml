@@ -18,6 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Check node avalability
+      - name: Check ICMP (ping) to k8s-node-4
         run: |
           ping -c 8 k8s-node-4
+
+      - name: Run Ansible Playbook (deploy SSH key + disable password login)
+        run: |
+          ansible-playbook \
+            -i inventory.ini \
+            playbooks/setup-ssh.yml \
+            --extra-vars "\
+            ansible_ssh_pass=${{ secrets.SSH_PASS }} \
+            ssh_public_key='${{ secrets.SSH_SETUP_PUB_KEY }}' \
+            target_user=${{ secrets.SSH_USER }} \
+            "

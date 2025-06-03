@@ -1,0 +1,12 @@
+- name: Add host key to known_hosts idempotently
+  ansible.builtin.known_hosts:
+    path: "{{ lookup('env', 'HOME') + '/.ssh/known_hosts' }}"
+    name: "{{ inventory_hostname }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -H ' + inventory_hostname) }}"
+  delegate_to: localhost
+
+- name: Add public key to authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ target_user }}"
+    state: present
+    key: "{{ ssh_pub_key }}"
