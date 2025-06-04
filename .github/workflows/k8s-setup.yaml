@@ -40,3 +40,15 @@ jobs:
             ssh_pub_key='${{ secrets.SSH_SETUP_PUB_KEY }}' \
             target_user=${{ secrets.SSH_USER }} \
             "
+      - name: Run Ansible Playbook k8s setup
+        run: |
+          export ANSIBLE_HOST_KEY_CHECKING=False
+          ansible-playbook \
+            -i ansible/inventory.ini \
+            -u ${{ secrets.SSH_USER }} \
+            ansible/playbooks/setup-k8s-general.yml \
+            --extra-vars "\
+            ansible_ssh_pass=${{ secrets.SSH_PASS }} \
+            ansible_become_pass=${{ secrets.SSH_PASS }} \
+            ssh_pub_key='${{ secrets.SSH_SETUP_PUB_KEY }}' \
+            target_user=${{ secrets.SSH_USER }} \
