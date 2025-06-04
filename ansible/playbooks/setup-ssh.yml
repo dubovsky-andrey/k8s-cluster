@@ -2,7 +2,6 @@
 - name: Set Up SSH
   hosts: setup_ssh
   become: true
-
   roles:
     - add_ssh_key
     - disable_password_authentication
