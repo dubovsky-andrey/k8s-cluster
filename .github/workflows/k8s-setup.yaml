@@ -50,3 +50,4 @@ jobs:
             ansible_ssh_pass=${{ secrets.SSH_PASS }} \
             ansible_become_pass=${{ secrets.SSH_PASS }} \
             ssh_pub_key='${{ secrets.SSH_SETUP_PUB_KEY }}' \
+            "
