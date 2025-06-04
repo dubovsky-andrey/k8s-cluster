@@ -1,0 +1,15 @@
+kube_user: habib
+kube_home: /home/habib
+file_path: "/boot/firmware/cmdline.txt"
+kubernetes_config_path: "/etc/kubernetes/admin.conf"
+kubernetes_join_path: "/home/habib/kubeadm_init_output.log"
+kubernetes_version: "v1.32"
+flannel_version: "v0.26.2"
+metallb_version: v0.14.8
+master_1_ip: "192.168.1.30"
+cidr_pods: "10.244.0.0/16"
+cidr_metal: "192.168.1.50-192.168.1.90"
+
+namespace_name_1: prod
+namespace_name_2: stage
+namespace_name_3: test

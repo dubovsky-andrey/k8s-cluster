@@ -1,0 +1,13 @@
+- name: Playbook to install kubernetes dependencies
+  hosts: setup_k8s
+  become: true
+  vars_files:
+    - ./group_vars/setup-k8s-general.yml
+  roles:
+    - update-upgrade-system
+#    - role: ../roles/disable-swap
+#    - role: ../roles/setup-cgroups
+#    - role: ../roles/install-aptitude
+#    - role: ../roles/setup-container-runtime
+#    - role: ../roles/setup-iptable-k8s
+#    - role: ../roles/install-kubernetes

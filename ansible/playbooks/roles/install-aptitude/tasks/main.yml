@@ -1,0 +1,32 @@
+- name: Install vim and aptitude
+  ansible.builtin.apt:
+    pkg:
+      - vim
+      - aptitude
+
+- name: Create Aptitude config directory
+  ansible.builtin.file:
+    path: /root/.aptitude/
+    state: directory
+    recurse: yes
+    owner: root
+    group: root
+    mode: '0700'
+
+- name: Configure Aptitude
+  ansible.builtin.copy:
+    content: |
+      aptitude "";
+      aptitude::Keep-Unused-Pattern "";
+      aptitude::Delete-Unused-Pattern "";
+      aptitude::UI "";
+      aptitude::UI::Prompt-On-Exit "false";
+      aptitude::UI::Default-Grouping "task,status";
+      aptitude::AutoClean-After-Update "true";
+      aptitude::Clean-After-Install "true";
+      aptitude::Forget-New-On-Update "true";
+    dest: /root/.aptitude/config
+    backup: yes
+    owner: root
+    group: root
+    mode: '0644'
