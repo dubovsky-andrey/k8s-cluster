@@ -42,7 +42,6 @@ jobs:
             "
       - name: Run Ansible Playbook k8s setup
         run: |
-          export ANSIBLE_HOST_KEY_CHECKING=False
           ansible-playbook \
             -i ansible/inventory.ini \
             -u ${{ secrets.SSH_USER }} \
