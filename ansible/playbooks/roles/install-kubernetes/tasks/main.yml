@@ -13,7 +13,7 @@
     dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
     mode: "0644"
 
-- name: Отобразить результат добавления GPG ключа Kubernetes
+- name: Show k8s gpg key result
   ansible.builtin.debug:
     var: add_k8s_gpg_key_result
 

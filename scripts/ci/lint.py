@@ -14,7 +14,7 @@ if not os.path.isdir(start_dir):
 
 cyr_pattern      = regex.compile(r'\p{Cyrillic}')
 emoji_pattern    = regex.compile(r'\p{Extended_Pictographic}')
-emoticon_pattern = regex.compile(r'[:;=8][\-~^]?[)(DPp]')
+emoticon_pattern = regex.compile(r'(?<!\w)[:;=8][\-~^]?[)(DPp](?!\w)')
 
 found = False
 
