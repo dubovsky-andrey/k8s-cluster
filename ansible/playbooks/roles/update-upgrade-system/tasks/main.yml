@@ -7,11 +7,12 @@
     autoremove: true
   when: ansible_facts.os_family == "Debian"
 
-- name: Ensure python3-libdnf5 is installed
-  ansible.builtin.raw: dnf install -y python3-libdnf5
+- name: Ensure python3-libdnf5 is installed (идемпотентно)
+  ansible.builtin.dnf:
+    name: python3-libdnf5
+    state: present
   become: true
   when: ansible_facts.os_family == "RedHat"
-  changed_when: false
 
 - name: Update repositories cache and upgrade system on RHEL/CentOS/Fedora
   ansible.builtin.dnf:
