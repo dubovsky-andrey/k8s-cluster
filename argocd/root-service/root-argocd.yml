@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argocd
+  finalizers:
+    - argocd.argoproj.io/resources-finalizer
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Dubovsky-Andrey/kubernetes-public
+    path: argocd
+    targetRevision: HEAD
+  destination:
+    name: in-cluster
+    namespace: test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
