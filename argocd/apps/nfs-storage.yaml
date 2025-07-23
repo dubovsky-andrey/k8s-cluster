@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Dubovsky-Andrey/k8s-cluster.git
+    repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: charts/nfs-storage
     targetRevision: HEAD
     helm:
