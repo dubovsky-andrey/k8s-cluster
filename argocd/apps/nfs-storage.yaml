@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: argocd/apps/charts/nfs-storage
+    path: argocd/charts/nfs-storage
     targetRevision: HEAD
     helm:
       valueFiles:
