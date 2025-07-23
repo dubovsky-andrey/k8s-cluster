@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
 
-    path: apps
+    path: argocd/apps
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
