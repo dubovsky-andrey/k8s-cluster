@@ -16,7 +16,7 @@ service:
 
 persistence:
   enabled: true
-  createPv: false # =true, если чарт должен сам создать PV
+  createPv: true
   size: 10Gi
   storageClass: nfs-storage
   accessModes:
