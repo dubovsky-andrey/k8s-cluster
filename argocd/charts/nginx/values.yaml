@@ -9,6 +9,9 @@ service:
   type: ClusterIP
   port: 80
 
+container:
+  port: 80
+
 resources: {}
 
 nodeSelector: {}
