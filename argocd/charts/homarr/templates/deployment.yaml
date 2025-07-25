@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "homarr.fullname" . }}
+  labels:
+    app: {{ include "homarr.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "homarr.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "homarr.name" . }}
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: {{ include "homarr.name" . }}
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: {{ include "homarr.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: TZ
+              value: "{{ .Values.env.TZ }}"
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.targetPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          volumeMounts:
+            - name: homarr-storage
+              mountPath: /app/data/configs
+            - name: homarr-storage
+              mountPath: /app/public/icons
+              subPath: icons
+            - name: homarr-storage
+              mountPath: /data
+              subPath: data
+            - name: homarr-storage
+              mountPath: /app/public/imgs/backgrounds
+              subPath: imgs/backgrounds
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: homarr-storage
+          persistentVolumeClaim:
+            claimName: {{ include "homarr.fullname" . }}-pvc
+      {{- end }}
