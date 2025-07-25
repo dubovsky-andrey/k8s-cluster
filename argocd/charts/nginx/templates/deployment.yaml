@@ -1,13 +1,22 @@
-apiVersion: v1
-kind: Service
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: {{ include "nginx.fullname" . }}
+  name: { { include "nginx.fullname" . } }
   labels:
-    app: {{ include "nginx.name" . }}
+    app: { { include "nginx.name" . } }
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: 80
+  replicas: { { .Values.replicaCount } }
   selector:
-    app: {{ include "nginx.name" . }}
+    matchLabels:
+      app: { { include "nginx.name" . } }
+  template:
+    metadata:
+      labels:
+        app: { { include "nginx.name" . } }
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: { { .Values.image.pullPolicy } }
+          ports:
+            - containerPort: 80
