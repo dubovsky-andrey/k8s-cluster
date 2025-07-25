@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: apps/charts/homarr
+    path: argocd/charts/homarr
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
