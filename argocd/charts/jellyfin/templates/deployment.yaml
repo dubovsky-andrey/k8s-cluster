@@ -61,15 +61,15 @@ spec:
           volumeMounts:
             - name: jellyfin-config
               mountPath: /config
+            - name: jellyfin-movies
+              mountPath: /movies
       {{- if .Values.persistence.enabled }}
       volumes:
         - name: jellyfin-config
           persistentVolumeClaim:
             claimName: {{ include "jellyfin.fullname" . }}-pvc
-        - name: jellyfin-cache
+        - name: jellyfin-movies
+                - name: jellyfin-movies-cifs
           persistentVolumeClaim:
-            claimName: {{ include "jellyfin.fullname" . }}-pvc
-        - name: jellyfin-media
-          persistentVolumeClaim:
-            claimName: {{ include "jellyfin.fullname" . }}-pvc
+            claimName: cifs-storage-movies
       {{- end }}
