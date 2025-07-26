@@ -1,0 +1,7 @@
+# 
+apiVersion: v2
+name: jellyfin
+description: "Helm chart for Jellyfin"
+type: application
+version: 1.0.0
+appVersion: "latest"

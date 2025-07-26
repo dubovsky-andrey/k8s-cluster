@@ -1,0 +1,12 @@
+# templates/pdb.yaml
+{{- if and .Values.podDisruptionBudget }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-pdb
+spec:
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: {{ include "jellyfin.name" . }}
+{{- end }}

@@ -1,0 +1,15 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-pvc
+  labels:
+    app: {{ include "jellyfin.name" . }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 2 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+{{- end }}
