@@ -70,5 +70,5 @@ spec:
             claimName: {{ include "jellyfin.fullname" . }}-pvc
         - name: jellyfin-movies
           persistentVolumeClaim:
-            claimName: cifs-storage-movies
+            claimName: jellyfin-cifs-movies-pvc
       {{- end }}
