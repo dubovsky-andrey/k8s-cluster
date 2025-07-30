@@ -1,4 +1,3 @@
-# 
 replicaCount: 4
 repository: dubovsky-andrey/k8s-cluster
 registrationToken:
