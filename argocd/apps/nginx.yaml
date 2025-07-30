@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: argocd/charts/nginx
-    targetRevision: HEAD
+    targetRevision: stage
     helm:
       valueFiles:
         - values.yaml
