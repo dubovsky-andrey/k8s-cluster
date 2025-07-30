@@ -1,0 +1,15 @@
+---
+# roles/kubernetes-apps/hubble/tasks/main.yml
+
+- name: Render Hubble UI LoadBalancer service manifest
+  template:
+    src: hubble-ui-lb-svc.yaml.j2
+    dest: /tmp/hubble-ui-lb-svc.yaml
+  when: hubble_ui_service_type == 'LoadBalancer'
+
+- name: Apply Hubble UI LoadBalancer service manifest via kubectl
+  command: >
+    kubectl apply --validate=false
+      --kubeconfig /etc/kubernetes/admin.conf
+      -f /tmp/hubble-ui-lb-svc.yaml
+  when: hubble_ui_service_type == 'LoadBalancer'

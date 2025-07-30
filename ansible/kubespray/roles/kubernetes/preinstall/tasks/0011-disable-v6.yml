@@ -1,0 +1,22 @@
+- name: Disable IPv6 via sysctl
+  ansible.builtin.sysctl:
+    name: "{{ item.name }}"
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+  loop:
+    - { name: net.ipv6.conf.all.disable_ipv6 }
+    - { name: net.ipv6.conf.default.disable_ipv6 }
+    - { name: net.ipv6.conf.lo.disable_ipv6 }
+
+- name: Ensure the change persists on reboot
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/99-disable-ipv6.conf
+    content: |
+      net.ipv6.conf.all.disable_ipv6 = 1
+      net.ipv6.conf.default.disable_ipv6 = 1
+      net.ipv6.conf.lo.disable_ipv6 = 1
+    owner: root
+    group: root
+    mode: "0644"

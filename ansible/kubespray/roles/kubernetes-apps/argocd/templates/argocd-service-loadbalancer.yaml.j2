@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server
+  namespace: {{ argocd_namespace }}
+spec:
+  type: {{ argocd_service_type }}
+  loadBalancerIP: {{ argocd_loadbalancer_ip }}
+  selector:
+    app.kubernetes.io/name: argocd-server
+  ports:
+    - name: https
+      port: {{ argocd_service_port }}
+      targetPort: {{ argocd_service_target_port }}
