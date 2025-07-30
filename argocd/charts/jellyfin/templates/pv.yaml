@@ -1,0 +1,16 @@
+{{- if and .Values.persistence.enabled .Values.persistence.createPv }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "jellyfin.fullname" . }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 2 }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.reclaimPolicy }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+{{- end }}

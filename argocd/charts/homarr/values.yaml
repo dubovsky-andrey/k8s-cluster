@@ -1,0 +1,42 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/ajnart/homarr
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 7575
+  loadBalancerIP: 192.168.1.53
+
+persistence:
+  enabled: true
+  createPv: true
+  size: 10Gi
+  storageClass: nfs-storage
+  accessModes:
+    - ReadWriteMany
+  reclaimPolicy: Retain
+
+nfs:
+  server: 192.168.1.20
+  path: /volume1/nfs/k8s-data/homarr
+
+securityContext:
+  fsGroup: 1000
+
+env:
+  TZ: America/New_York
+
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 5

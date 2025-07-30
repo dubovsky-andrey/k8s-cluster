@@ -1,0 +1,55 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: jellyfin/jellyfin
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8096
+  loadBalancerIP: 192.168.1.54
+
+persistence:
+  enabled: true
+  createPv: true
+  size: 20Gi
+  storageClass: nfs-storage
+  accessModes:
+    - ReadWriteMany
+  reclaimPolicy: Retain
+
+nfs:
+  server: 192.168.1.20
+  path: /volume1/nfs/k8s-data/jellyfin
+
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+env:
+  TZ: America/New_York
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1400m
+    memory: 6Gi
+
+podDisruptionBudget:
+  maxUnavailable: 1
