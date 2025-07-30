@@ -4,7 +4,7 @@ metadata:
   name: nfs-storage
   namespace: argocd
 spec:
-  project: storage
+  project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: argocd/charts/nfs-storage
