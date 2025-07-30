@@ -25,7 +25,7 @@ persistence:
 
 nfs:
   server: 192.168.1.20
-  path: /volume1/nfs/k8s-data/homarr
+  path: /volume1/k8s-data/homarr
 
 securityContext:
   fsGroup: 1000
