@@ -2,8 +2,8 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: argocd-root-service
-  namespace: argocd
+  name: {{ argocd_name }}
+  namespace: {{ argocd_namespace }}
   finalizers:
     - argocd.argoproj.io/resources-finalizer
 spec:

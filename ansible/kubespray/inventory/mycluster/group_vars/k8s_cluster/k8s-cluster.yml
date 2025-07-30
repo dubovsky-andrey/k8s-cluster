@@ -370,17 +370,18 @@ kubeadm_patches: []
 # Set to true to remove the role binding to anonymous users created by kubeadm
 remove_anonymous_access: false
 
-# Включаем сервис LoadBalancer и указываем нужный IP
+# Argo cd parametrs
+argocd_name: "argocd-root-service"
+argocd_namespace: "argocd"
 argocd_service_type: LoadBalancer
 argocd_loadbalancer_ip: "192.168.1.51"
 argocd_service_port: "443"
 argocd_service_target_port: "8080"
 argocd_root_service_repo_url: "https://github.com/dubovsky-andrey/k8s-cluster.git"
-argocd_namespace: "argocd-root"
 argocd_root_service_branch: "stage"
 argocd_root_service_path: "argocd/apps"
 
-# включаем Hubble UI за LoadBalancer’ом
+# Hubble UI Parametrs
 hubble_ui_service_type: LoadBalancer
 hubble_ui_loadBalancerIP: "192.168.1.50"
 hubble_ui_service_port: "80"
