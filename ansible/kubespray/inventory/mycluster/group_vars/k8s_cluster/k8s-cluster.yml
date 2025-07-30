@@ -377,7 +377,7 @@ argocd_service_port: "443"
 argocd_service_target_port: "8080"
 argocd_root_service_repo_url: "https://github.com/dubovsky-andrey/k8s-cluster.git"
 argocd_namespace: "argocd"
-argocd_root_service_branch: "HEAD"
+argocd_root_service_branch: "stage"
 argocd_root_service_path: "argocd/apps"
 
 # включаем Hubble UI за LoadBalancer’ом
