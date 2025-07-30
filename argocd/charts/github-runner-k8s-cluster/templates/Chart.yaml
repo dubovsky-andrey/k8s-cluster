@@ -1,0 +1,4 @@
+apiVersion: v2
+name: github-runner-k8s-cluster
+description: Helm chart for deploying GitHub self-hosted runners
+version: 0.1.0

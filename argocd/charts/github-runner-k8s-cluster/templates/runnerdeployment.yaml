@@ -1,0 +1,32 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerDeployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      repository: {{ .Values.repository }}
+      registrationToken:
+        secretName: {{ .Values.registrationToken.secretName }}
+        key: {{ .Values.registrationToken.key }}
+      dockerEnabled: {{ .Values.dockerEnabled }}
+      dockerdWithinRunnerContainer: {{ .Values.dockerdWithinRunnerContainer }}
+      env:
+{{- range .Values.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+{{- end }}
+      labels:
+{{- range .Values.labels }}
+        - {{ . }}
+{{- end }}
+      ephemeral: {{ .Values.ephemeral }}
+      tolerations:
+{{- toYaml .Values.tolerations | nindent 8 }}
+      topologySpreadConstraints:
+{{- toYaml .Values.topologySpreadConstraints | nindent 8 }}

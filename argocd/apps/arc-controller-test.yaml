@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-controller
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://actions-runner-controller.github.io/actions-runner-controller
+    chart: actions-runner-controller
+    targetRevision: v0.23.7
+    helm:
+      values: |
+        githubWebhookServer:
+          enabled: true
+        authSecret:
+          create: false
+        installCRDs: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: test
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
