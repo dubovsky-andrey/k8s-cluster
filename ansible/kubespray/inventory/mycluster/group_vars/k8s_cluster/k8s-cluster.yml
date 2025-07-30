@@ -371,6 +371,7 @@ kubeadm_patches: []
 remove_anonymous_access: false
 
 # Argo cd parametrs
+argocd_version: "3.0.11"
 argocd_name: "argocd-root-service"
 argocd_namespace: "argocd"
 argocd_service_type: LoadBalancer
