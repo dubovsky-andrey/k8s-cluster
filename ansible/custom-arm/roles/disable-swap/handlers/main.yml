@@ -1,0 +1,6 @@
+
+- name: Reboot system
+  become: yes
+  reboot:
+    msg: "Rebooting to apply swap and cgroup settings."
+    reboot_timeout: 90

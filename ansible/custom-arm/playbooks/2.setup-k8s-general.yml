@@ -1,0 +1,7 @@
+- name: Playbook to install kubernetes dependencies
+  hosts: setup_k8s
+  become: true
+  roles:
+    - role: ../roles/update-upgrade-system
+    - role: ../roles/disable-swap
+    - role: ../roles/setup-cgroups

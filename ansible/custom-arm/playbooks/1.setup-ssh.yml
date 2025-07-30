@@ -1,0 +1,9 @@
+---
+- name: Set Up SSH
+  hosts: setup_ssh
+  become: yes
+  roles:
+    - role: ../roles/add_ssh_key
+      vars:
+        target_user: habib
+    - role: ../roles/disable_password_authentication

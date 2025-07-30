@@ -1,0 +1,14 @@
+- name: Add ed25519 key to known_hosts
+  ansible.builtin.known_hosts:
+    path: "{{ lookup('env', 'HOME') + '/.ssh/known_hosts' }}"
+    name: "{{ inventory_hostname }}"
+    key: >-
+      {{ lookup('pipe', 'ssh-keyscan -T 3 -t ed25519 -H ' + (hostvars[inventory_hostname]['ansible_host'] | default(inventory_hostname))) | regex_search('^\\|.*ed25519.*$', multiline=True) }}
+  delegate_to: localhost
+  become: false
+
+- name: Add public key to authorized keys
+  ansible.posix.authorized_key:
+    user: "{{ target_user }}"
+    state: present
+    key: "{{ lookup('file', role_path + '/files/id_ed25519.pub') }}"
