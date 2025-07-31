@@ -12,6 +12,9 @@ spec:
     targetRevision: v25.3.2
     helm:
       releaseName: nvidia-gpu-operator
+      values: |
+        nfd:
+          enabled: false
 
   destination:
     server: https://kubernetes.default.svc
