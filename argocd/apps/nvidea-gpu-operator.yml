@@ -16,6 +16,11 @@ spec:
         operator:
           nodeSelector:
             kubernetes.io/arch: amd64
+          tolerations:
+          - key: "node-role.kubernetes.io/gpu"
+            operator: "Equal"
+            value: "true"
+            effect: "NoSchedule"
 
         nodeFeatureDiscovery:
           enabled: true
