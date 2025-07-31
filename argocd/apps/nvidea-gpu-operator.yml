@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: argocd/charts/nvidea-gru-operator
+    path: argocd/charts/nvidea-gpu-operator
     targetRevision: stage
     helm:
       valueFiles:
