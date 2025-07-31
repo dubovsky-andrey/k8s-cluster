@@ -24,15 +24,6 @@ spec:
               containerPort: {{ .targetPort }}
               protocol: {{ .protocol }}
             {{- end }}
-        tolerations:
-        - key: "node-role.kubernetes.io/cpu"
-          operator: "Equal"
-          value: "x86_64"
-          effect: "NoSchedule"
-        - key: "node-role.kubernetes.io/gpu"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
           volumeMounts:
             - name: storage
               mountPath: {{ .Values.persistence.workPath }}
@@ -40,6 +31,15 @@ spec:
             - name: storage
               mountPath: {{ .Values.persistence.configPath }}
               subPath: conf
+      tolerations:
+      - key: "node-role.kubernetes.io/cpu"
+          operator: "Equal"
+          value: "x86_64"
+          effect: "NoSchedule"
+      - key: "node-role.kubernetes.io/gpu"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       volumes:
         - name: storage
           persistentVolumeClaim:
