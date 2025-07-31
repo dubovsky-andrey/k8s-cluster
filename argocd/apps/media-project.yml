@@ -20,3 +20,8 @@ spec:
   clusterResourceWhitelist:
     - group: storage.k8s.io
       kind: StorageClass
+  namespaceResourceWhitelist:
+    - group: "" # core API group
+      kind: PersistentVolumeClaim
+    - group: networking.k8s.io
+      kind: NetworkPolicy
