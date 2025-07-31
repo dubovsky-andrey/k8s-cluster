@@ -14,7 +14,11 @@ if not os.path.isdir(start_dir):
 
 cyr_pattern      = regex.compile(r'\p{Cyrillic}')
 emoji_pattern    = regex.compile(r'\p{Extended_Pictographic}')
-emoticon_pattern = regex.compile(r'(?<=\s)[:;=8][\-~^]?[)(DPp](?=\s|$)')
+emoticon_pattern = regex.compile(
+    r'(?<=\s)(?<![<>]\s)'
+    r'(?:[:;=8][\-~^]?[)(DPp])'
+    r'(?=\s|$)'
+)
 
 # Binary file extensions to skip
 # This list can be extended as needed
