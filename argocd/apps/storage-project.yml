@@ -9,6 +9,7 @@ spec:
 
   sourceRepos:
     - https://github.com/dubovsky-andrey/*
+    - https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 
   # Where applications can be deployed
   destinations:
