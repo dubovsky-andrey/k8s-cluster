@@ -5,16 +5,18 @@ metadata:
   namespace: argocd
 spec:
   project: default
+
   source:
-    repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: argocd/charts/nvidia-gpu-operator
-    targetRevision: stage
+    repoURL: https://helm.ngc.nvidia.com/nvidia\
+    chart: gpu-operator
+    targetRevision: v25.3.2
     helm:
-      valueFiles:
-        - values.yaml
+      releaseName: nvidia-gpu-operator
+
   destination:
     server: https://kubernetes.default.svc
-    namespace: prod
+    namespace: gpu-operator
+
   syncPolicy:
     automated:
       prune: true
