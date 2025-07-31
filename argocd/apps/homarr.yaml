@@ -4,7 +4,7 @@ metadata:
   name: homarr
   namespace: argocd
 spec:
-  project: default
+  project: homarr
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: argocd/charts/homarr
