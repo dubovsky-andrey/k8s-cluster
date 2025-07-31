@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nvidea-gpu-operator
+  name: nvidia-gpu-operator
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: argocd/charts/nvidea-gpu-operator
+    path: argocd/charts/nvidia-gpu-operator
     targetRevision: stage
     helm:
       valueFiles:
