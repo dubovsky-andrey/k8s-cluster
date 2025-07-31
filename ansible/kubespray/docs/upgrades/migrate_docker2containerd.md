@@ -1,8 +1,8 @@
 # Migrating from Docker to Containerd
 
-❗MAKE SURE YOU READ BEFORE PROCEEDING❗
+!MAKE SURE YOU READ BEFORE PROCEEDING!
 
-**Migrating container engines is not officially supported by Kubespray**. The following procedure covers one particular scenario and involves manual steps, along with multiple runs of `cluster.yml`. It provides no guarantees that it will actually work or that any further action is needed.  Please, consider these instructions as experimental guidelines. While they can be used to migrate your cluster, they will likely evolve over time. At the moment, they are intended as an additional resource to provide insight into how these steps can be officially integrated into the Kubespray playbooks.
+**Migrating container engines is not officially supported by Kubespray**. The following procedure covers one particular scenario and involves manual steps, along with multiple runs of `cluster.yml`. It provides no guarantees that it will actually work or that any further action is needed. Please, consider these instructions as experimental guidelines. While they can be used to migrate your cluster, they will likely evolve over time. At the moment, they are intended as an additional resource to provide insight into how these steps can be officially integrated into the Kubespray playbooks.
 
 As of Kubespray 2.18.0, containerd is already the default container engine. If you have the chance, it is still advisable and safer to reset and redeploy the entire cluster with a new container engine.
 
