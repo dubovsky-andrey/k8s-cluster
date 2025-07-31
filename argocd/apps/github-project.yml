@@ -9,6 +9,7 @@ spec:
 
   sourceRepos:
     - https://github.com/dubovsky-andrey/*
+    - https://charts.jetstack.io
 
   # Where applications can be deployed
   destinations:
