@@ -4,7 +4,7 @@ metadata:
   name: jellyfin
   namespace: argocd
 spec:
-  project: media
+  project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: argocd/charts/jellyfin
