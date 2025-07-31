@@ -65,7 +65,13 @@ spec:
               mountPath: /movies
             - name: jellyfin-tv
               mountPath: /tv
+      tolerations:
+      - key: "gpu"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
       {{- if .Values.persistence.enabled }}
+      
       volumes:
         - name: jellyfin-config
           persistentVolumeClaim:
