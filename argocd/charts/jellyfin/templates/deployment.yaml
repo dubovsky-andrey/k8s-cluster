@@ -66,10 +66,14 @@ spec:
             - name: jellyfin-tv
               mountPath: /tv
       tolerations:
-      - key: "node-role.kubernetes.io/gpu"
-        operator: "Equal"
-        value: "true"
-        effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/cpu"
+          operator: "Equal"
+          value: "x86_64"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/gpu"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       {{- if .Values.persistence.enabled }}
       
       volumes:
