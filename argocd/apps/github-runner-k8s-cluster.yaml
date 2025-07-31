@@ -4,7 +4,7 @@ metadata:
   name: k8s-cluster
   namespace: argocd
 spec:
-  project: default
+  project: github-runner
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster
     path: argocd/charts/github-runner-k8s-cluster/

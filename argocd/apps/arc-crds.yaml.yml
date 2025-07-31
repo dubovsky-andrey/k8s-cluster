@@ -4,7 +4,7 @@ metadata:
   name: arc-crds
   namespace: argocd
 spec:
-  project: default
+  project: github-runner
   source:
     repoURL: https://github.com/actions/actions-runner-controller
     path: charts/actions-runner-controller/crds
