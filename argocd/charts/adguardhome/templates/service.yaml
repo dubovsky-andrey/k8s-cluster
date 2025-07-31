@@ -1,37 +1,20 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   name: {{ include "adguardhome.fullname" . }}
   labels:
     app: {{ include "adguardhome.name" . }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
   selector:
-    matchLabels:
-      app: {{ include "adguardhome.name" . }}
-  template:
-    metadata:
-      labels:
-        app: {{ include "adguardhome.name" . }}
-    spec:
-      containers:
-        - name: adguardhome
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            {{- range .Values.service.ports }}
-            - name: {{ .name }}
-              containerPort: {{ .targetPort }}
-              protocol: {{ .protocol }}
-            {{- end }}
-          volumeMounts:
-            - name: storage
-              mountPath: {{ .Values.persistence.workPath }}
-              subPath: work
-            - name: storage
-              mountPath: {{ .Values.persistence.configPath }}
-              subPath: conf
-      volumes:
-        - name: storage
-          persistentVolumeClaim:
-            claimName: {{ include "adguardhome.fullname" . }}-pvc
+    app: {{ include "adguardhome.name" . }}
+  ports:
+    {{- range .Values.service.ports }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort }}
+      protocol: {{ .protocol }}
+    {{- end }}
