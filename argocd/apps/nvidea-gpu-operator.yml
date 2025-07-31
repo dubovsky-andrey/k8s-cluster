@@ -14,45 +14,51 @@ spec:
       releaseName: nvidia-gpu-operator
       values: |
         operator:
+          enabled: true
           nodeSelector:
             kubernetes.io/arch: amd64
           tolerations:
-          - key: "node-role.kubernetes.io/gpu"
-            operator: "Equal"
-            value: "true"
-            effect: "NoSchedule"
+            - key: "node-role.kubernetes.io/gpu"
+              operator: Equal
+              value: "true"
+              effect: NoSchedule
 
-        nodeFeatureDiscovery:
+        nfd:
           enabled: true
+
+        node-feature-discovery:
           nodeSelector:
             kubernetes.io/arch: amd64
 
         driver:
+          enabled: true
           nodeSelector:
-            node-role.kubernetes.io/gpu: "true" 
+            node-role.kubernetes.io/gpu: "true"
           tolerations:
             - key: "node-role.kubernetes.io/gpu"
-              operator: "Equal"
+              operator: Equal
               value: "true"
-              effect: "NoSchedule"
+              effect: NoSchedule
 
         devicePlugin:
+          enabled: true
           nodeSelector:
             node-role.kubernetes.io/gpu: "true"
           tolerations:
             - key: "node-role.kubernetes.io/gpu"
-              operator: "Equal"
+              operator: Equal
               value: "true"
-              effect: "NoSchedule"
+              effect: NoSchedule
 
         toolkit:
+          enabled: true
           nodeSelector:
             node-role.kubernetes.io/gpu: "true"
           tolerations:
             - key: "node-role.kubernetes.io/gpu"
-              operator: "Equal"
+              operator: Equal
               value: "true"
-              effect: "NoSchedule"
+              effect: NoSchedule
 
   destination:
     server: https://kubernetes.default.svc
