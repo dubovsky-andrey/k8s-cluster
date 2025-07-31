@@ -1,0 +1,15 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "adguardhome.fullname" . }}-pvc
+  labels:
+    app: {{ include "adguardhome.name" . }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+{{- end }}

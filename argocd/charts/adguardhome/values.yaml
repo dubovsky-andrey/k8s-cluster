@@ -1,0 +1,66 @@
+# values.yaml
+replicaCount: 1
+
+image:
+  repository: adguard/adguardhome
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.50
+  # define all service ports here
+  ports:
+    - name: dns-tcp
+      port: 53
+      targetPort: 53
+      protocol: TCP
+    - name: dns-udp
+      port: 53
+      targetPort: 53
+      protocol: UDP
+    - name: dhcp-udp
+      port: 67
+      targetPort: 67
+      protocol: UDP
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: 443
+      protocol: TCP
+    - name: ui
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+    - name: dns-tls
+      port: 853
+      targetPort: 853
+      protocol: TCP
+    - name: dns-quic
+      port: 784
+      targetPort: 784
+      protocol: UDP
+    - name: dns-alt-udp
+      port: 8853
+      targetPort: 8853
+      protocol: UDP
+    - name: dns-alt-tcp
+      port: 5443
+      targetPort: 5443
+      protocol: TCP
+
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteMany
+  size: 10Gi
+  storageClass: nfs-storage
+  # mount paths inside the container
+  workPath: /opt/adguardhome/work
+  configPath: /opt/adguardhome/conf
+
+nameOverride: ""
+fullnameOverride: ""

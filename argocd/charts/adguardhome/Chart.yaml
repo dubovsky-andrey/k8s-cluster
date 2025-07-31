@@ -1,0 +1,7 @@
+# Chart.yaml
+apiVersion: v2
+name: adguardhome
+description: A Helm chart for deploying AdGuard Home DNS/DHCP server
+type: application
+version: 0.1.0
+appVersion: "latest"
