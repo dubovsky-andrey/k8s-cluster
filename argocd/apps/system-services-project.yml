@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: system-services # Project name
+  namespace: argocd #argocd namespace
+spec:
+  description: >
+    Project for managing storage-related applications.
+
+  sourceRepos:
+    - https://github.com/dubovsky-andrey/*
+
+  # Where applications can be deployed
+  destinations:
+    - namespace: test
+      server: https://kubernetes.default.svc
+    - namespace: prod
+      server: https://kubernetes.default.svc
