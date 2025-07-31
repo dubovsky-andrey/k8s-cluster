@@ -1,0 +1,2 @@
+wget -O gpu-operator/files/gpu-operator.yaml \
+https://github.com/NVIDIA/gpu-operator/raw/main/deploy/gpu-operator.yaml

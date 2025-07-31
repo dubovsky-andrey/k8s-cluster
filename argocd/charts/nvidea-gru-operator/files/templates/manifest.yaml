@@ -1,0 +1,17 @@
+{{- /* Load the raw multi-document YAML */ -}}
+{{- $raw := .Files.Get .Values.manifest }}
+{{- $docs := splitList "\n---\n" $raw }}
+{{- range $doc := $docs }}
+{{- $res := fromYaml $doc }}
+{{- if $res }}
+apiVersion: {{ $res.apiVersion }}
+kind:       {{ $res.kind }}
+metadata:
+{{ toYaml $res.metadata | indent 2 }}
+{{- if $res.spec }}
+spec:
+{{ toYaml $res.spec | indent 2 }}
+{{- end }}
+---
+{{- end }}
+{{- end }}

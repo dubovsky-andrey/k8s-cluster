@@ -1,0 +1,5 @@
+# Namespace into which all resources will be installed
+namespace: gpu-operator
+
+# Path under the 'files/' directory where the GPU operator YAML lives
+manifest: gpu-operator.yaml
