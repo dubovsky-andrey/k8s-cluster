@@ -4,7 +4,7 @@ metadata:
   name: adguardhome
   namespace: argocd
 spec:
-  project: default
+  project: system-services
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
     path: argocd/charts/adguardhome
