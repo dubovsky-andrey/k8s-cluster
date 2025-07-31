@@ -11,6 +11,7 @@ spec:
     - https://github.com/dubovsky-andrey/*
     - https://charts.jetstack.io
     - https://github.com/actions/actions-runner-controller
+    - https://actions-runner-controller.github.io/actions-runner-controller
 
   # Where applications can be deployed
   destinations:
