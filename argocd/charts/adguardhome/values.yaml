@@ -1,4 +1,3 @@
-# values.yaml
 replicaCount: 1
 
 image:
@@ -9,7 +8,6 @@ image:
 service:
   type: LoadBalancer
   loadBalancerIP: 192.168.1.50
-  # define all service ports here
   ports:
     - name: dns-tcp
       port: 53
@@ -58,7 +56,6 @@ persistence:
     - ReadWriteMany
   size: 10Gi
   storageClass: nfs-storage
-  # mount paths inside the container
   workPath: /opt/adguardhome/work
   configPath: /opt/adguardhome/conf
 
