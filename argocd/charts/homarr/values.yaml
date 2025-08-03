@@ -34,9 +34,26 @@ env:
   TZ: America/New_York
 
 livenessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
   initialDelaySeconds: 30
   periodSeconds: 10
 
 readinessProbe:
+  enabled: true
+  httpGet:
+    path: /
+    port: http
   initialDelaySeconds: 5
   periodSeconds: 5
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+  limits:
+    cpu: 500m
+    memory: 256Mi
