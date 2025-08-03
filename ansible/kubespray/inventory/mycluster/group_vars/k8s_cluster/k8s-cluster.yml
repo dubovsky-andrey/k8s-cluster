@@ -376,7 +376,7 @@ argocd_name: "argocd-root-service"
 argocd_namespace: "argocd"
 argocd_service_type: LoadBalancer
 argocd_loadbalancer_ip: "192.168.1.51"
-argocd_service_port: "443"
+argocd_service_port: "80"
 argocd_service_target_port: "8080"
 argocd_root_service_repo_url: "https://github.com/dubovsky-andrey/k8s-cluster.git"
 argocd_root_service_branch: "stage"

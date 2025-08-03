@@ -219,7 +219,6 @@ Default password:
 #   ---
 # Use the following var to set admin password
 argocd_admin_password: "password"
-
 # The plugin manager for kubectl
 
 # Kube VIP

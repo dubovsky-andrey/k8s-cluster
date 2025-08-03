@@ -16,3 +16,11 @@ spec:
       server: https://kubernetes.default.svc
     - namespace: prod
       server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: PersistentVolume
+
+  resourceWhitelist:
+    - group: ""
+      kind: PersistentVolumeClaim
