@@ -65,13 +65,8 @@ spec:
               mountPath: /movies
             - name: jellyfin-tv
               mountPath: /tv
-      tolerations:
-        - key: "node-role.kubernetes.io/gpu"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
-      {{- if .Values.persistence.enabled }}
-      
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       volumes:
         - name: jellyfin-config
           persistentVolumeClaim:
