@@ -8,14 +8,14 @@ spec:
   source:
     repoURL: https://falcosecurity.github.io/charts
     chart: falco
-    targetRevision: "4.8.0"
+    targetRevision: "6.2.2"
     helm:
       values: |
         falco:
           grpc:
             enabled: true
         driver:
-          kind: modern_ebpf
+          kind: ebpf
         resources:
           requests:
             cpu: 100m
