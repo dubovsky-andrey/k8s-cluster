@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://homarr-labs.github.io/charts/      # официальный репозиторий чарта :contentReference[oaicite:2]{index=2}
+    repoURL: https://homarr-labs.github.io/charts/
     chart: homarr
-    targetRevision: "1.31.0"                            # версия чарта :contentReference[oaicite:3]{index=3}
+    targetRevision: "5.6.0"
     helm:
       values: |
         replicaCount: 2
