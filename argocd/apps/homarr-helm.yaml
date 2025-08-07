@@ -43,3 +43,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+  patches:
+    - target:
+        kind: Service
+        name: homarr-inline
+      patch: |-
+        spec:
+          loadBalancerIP: 192.168.1.53
