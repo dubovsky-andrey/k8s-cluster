@@ -43,14 +43,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-  patchesJson6902:
-    - target:
-        group: "" # core/v1
-        version: v1
-        kind: Service
-        namespace: prod
-        name: homarr-inline
-      patch: |-
-        - op: add
-          path: /spec/loadBalancerIP
-          value: "192.168.1.53"
