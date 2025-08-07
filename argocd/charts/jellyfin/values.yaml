@@ -54,4 +54,8 @@ resources:
 podDisruptionBudget:
   maxUnavailable: 1
 
-nodeSelector: beta.kubernetes.io/arch=amd64
+nodeSelector:
+  beta.kubernetes.io/arch: amd64
+
+release:
+  namespace: prod
