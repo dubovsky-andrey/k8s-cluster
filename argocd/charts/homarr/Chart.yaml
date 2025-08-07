@@ -1,6 +1,0 @@
-apiVersion: v2
-name: homarr
-description: "Helm chart for Homarr dashboard"
-type: application
-version: 1.0.0
-appVersion: "latest"
