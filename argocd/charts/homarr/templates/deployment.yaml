@@ -28,9 +28,9 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http 
+            - name: {{ .Values.service.portName }} 
               containerPort: {{ .Values.service.targetPort }}
-              protocol: TCP
+              protocol: {{ .Values.service.protocol }}
           env:
             - name: TZ
               value: "{{ .Values.env.TZ }}"
