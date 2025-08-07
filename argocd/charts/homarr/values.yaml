@@ -59,3 +59,7 @@ resources:
   limits:
     cpu: 500m
     memory: 400Mi
+
+pdb:
+  enabled: true
+  minAvailable: 1
