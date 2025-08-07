@@ -45,6 +45,8 @@ spec:
       selfHeal: true
   patches:
     - target:
+        group: ""
+        version: v1
         kind: Service
         name: homarr-inline
       patch: |-
