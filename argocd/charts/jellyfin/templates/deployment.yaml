@@ -77,4 +77,3 @@ spec:
         - name: jellyfin-tv
           persistentVolumeClaim:
             claimName: jellyfin-cifs-tv-pvc
-      {{- end }}
