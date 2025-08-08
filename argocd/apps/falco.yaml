@@ -1,3 +1,4 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -26,6 +27,48 @@ spec:
         tolerations:
           - effect: NoSchedule
             operator: Exists
+        nodeSelector:
+          kubernetes.io/arch= arm64
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: falco-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://falcosecurity.github.io/charts
+    chart: falco
+    targetRevision: "6.2.2"
+    helm:
+      values: |
+        falco:
+          grpc:
+            enabled: true
+        driver:
+          kind: bpf
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+        tolerations:
+          - effect: NoSchedule
+            operator: Exists
+        nodeSelector:
+          kubernetes.io/arch= arm64
   destination:
     server: https://kubernetes.default.svc
     namespace: falco-system
