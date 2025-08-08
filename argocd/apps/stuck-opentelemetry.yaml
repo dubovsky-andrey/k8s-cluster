@@ -16,7 +16,9 @@ spec:
         tolerations:
           - operator: Exists
         daemonCollector:
+          enabled: true
           service:
+            enabled: true
             type: ClusterIP
           ports:
             - name: prometheus
