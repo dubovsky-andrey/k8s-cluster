@@ -16,7 +16,7 @@ spec:
           grpc:
             enabled: true
         driver:
-          kind: modern-ebpf
+          kind: modern_ebpf
         resources:
           requests:
             cpu: 100m
