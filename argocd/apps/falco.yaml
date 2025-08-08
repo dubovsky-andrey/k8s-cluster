@@ -28,7 +28,7 @@ spec:
           - effect: NoSchedule
             operator: Exists
         nodeSelector:
-          kubernetes.io/arch= arm64
+          kubernetes.io/arch: amd64
   destination:
     server: https://kubernetes.default.svc
     namespace: falco-system
@@ -68,7 +68,7 @@ spec:
           - effect: NoSchedule
             operator: Exists
         nodeSelector:
-          kubernetes.io/arch= arm64
+          kubernetes.io/arch: arm64
   destination:
     server: https://kubernetes.default.svc
     namespace: falco-system
