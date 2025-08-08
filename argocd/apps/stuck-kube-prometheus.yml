@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://prometheus-community.github.io/helm-charts
     chart: kube-prometheus-stack
-    targetRevision: "75.18.1" # последняя стабильная версия чарта
+    targetRevision: "75.19.0"
     helm:
       values: |
         crds:
