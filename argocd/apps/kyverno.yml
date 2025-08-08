@@ -11,6 +11,7 @@ spec:
     targetRevision: "3.5.0"
     helm:
       values: |
+        installCRDs: true
         replicaCount: 2
         serviceMonitor:
           enabled: true
@@ -34,3 +35,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
