@@ -17,13 +17,13 @@ spec:
           - operator: Exists
         daemonCollector:
           enabled: true
+          mode: daemonset
           service:
             enabled: true
             type: ClusterIP
             selector:
               app.kubernetes.io/component: opentelemetry-collector
               app.kubernetes.io/instance: opentelemetry.opentelemetry-kube-stack-daemon
-
           ports:
             - name: prometheus
               port: 8889
