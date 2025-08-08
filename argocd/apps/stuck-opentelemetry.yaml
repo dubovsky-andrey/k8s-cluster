@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opentelemetry-kube-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+    chart: opentelemetry-kube-stack
+    targetRevision: "0.8.0"
+    helm:
+      values: |
+        nodeSelector:
+          kubernetes.io/arch: amd64
+        tolerations:
+          - operator: Exists
+        opentelemetry-collector:
+          service:
+            type: ClusterIP
+          ports:
+            - name: prometheus
+              port: 8889
+              protocol: TCP
+              targetPort: 8889
+          serviceMonitor:
+            enabled: true
+            additionalLabels: {}   # при желании можно метить
+            interval: 30s
+            scrapeTimeout: 10s
+            relabelings: []
+          config:
+            receivers:
+              otlp:
+                protocols:
+                  http:
+                  grpc:
+            processors:
+              batch: {}
+            exporters:
+              prometheus:
+                endpoint: "0.0.0.0:8889"
+            service:
+              pipelines:
+                metrics:
+                  receivers: [otlp]
+                  processors: [batch]
+                  exporters: [prometheus]
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opentelemetry
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

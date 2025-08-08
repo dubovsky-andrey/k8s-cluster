@@ -22,6 +22,13 @@ spec:
           service:
             type: LoadBalancer
             loadBalancerIP: 192.168.1.58
+          prometheusSpec:
+            serviceMonitorSelector: {}
+            serviceMonitorNamespaceSelector: {}
+            podMonitorSelector: {}
+            podMonitorNamespaceSelector: {}
+            ruleSelector: {}
+            ruleNamespaceSelector: {}
         nodeSelector:
           kubernetes.io/arch: amd64
         tolerations:
