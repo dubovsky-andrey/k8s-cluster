@@ -11,8 +11,14 @@ spec:
     targetRevision: "0.17.3"
     helm:
       values: |
+        gfd:
+          enabled: true
+          tolerations:
+            - operator: Exists
+          nodeSelector:
+            kubernetes.io/arch: amd64
         tolerations:
-          - operator: "Exists"
+          - operator: Exists
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
