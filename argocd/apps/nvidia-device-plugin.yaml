@@ -19,6 +19,13 @@ spec:
             kubernetes.io/arch: amd64
         tolerations:
           - operator: Exists
+        config:
+          create: true
+          map:
+            config.yaml: |
+              version: v1
+              flags:
+                deviceDiscoveryStrategy: cdi
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
