@@ -1,36 +1,39 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: nvidia-device-plugin
+  name: nvidia-gpu-operator
   namespace: argocd
 spec:
   project: default
   source:
-    repoURL: https://nvidia.github.io/k8s-device-plugin
-    chart: nvidia-device-plugin
-    targetRevision: "0.17.3"
+    repoURL: https://nvidia.github.io/gpu-operator
+    chart: gpu-operator
+    targetRevision: v24.9.0
     helm:
       values: |
-        gfd:
+        driver:
+          enabled: false
+        toolkit:
           enabled: true
-          tolerations:
-            - operator: Exists
-          nodeSelector:
-            kubernetes.io/arch: amd64
-          runtimeClassName: nvidia
+        node-feature-discovery:
+          enabled: true
+          worker:
+            tolerations:
+              - operator: Exists
+        operator:
+          defaultRuntime: containerd
+        validator:
+          driver:
+            enabled: false
+        dcgm:
+          enabled: false
+        dcgmExporter:
+          enabled: false
         tolerations:
           - operator: Exists
-        runtimeClassName: nvidia
-        config:
-          create: true
-          map:
-            config.yaml: |
-              version: v1
-              flags:
-                deviceDiscoveryStrategy: nvml
   destination:
     server: https://kubernetes.default.svc
-    namespace: kube-system
+    namespace: nvidia
   syncPolicy:
     automated:
       prune: true
