@@ -17,8 +17,10 @@ spec:
             - operator: Exists
           nodeSelector:
             kubernetes.io/arch: amd64
+          runtimeClassName: nvidia
         tolerations:
           - operator: Exists
+        runtimeClassName: nvidia
         config:
           create: true
           map:
