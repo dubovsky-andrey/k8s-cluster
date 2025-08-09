@@ -128,3 +128,4 @@ tmp.md
 kubernetes_sigs-kubespray*tar.gz
 ansible_collections
 .lock
+ansible/kubespray/kubectl
