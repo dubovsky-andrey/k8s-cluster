@@ -11,8 +11,6 @@ spec:
     targetRevision: "0.17.3"
     helm:
       values: |
-        nodeSelector:
-          nvidia.com/gpu.present: "true"
         tolerations:
           - operator: "Exists"
   destination:
