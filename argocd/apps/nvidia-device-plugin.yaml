@@ -17,6 +17,9 @@ spec:
           enabled: true
         toolkit:
           enabled: true
+          repository: nvcr.io/nvidia/k8s
+          image: container-toolkit
+          version: v1.17.8-ubuntu20.04
         node-feature-discovery:
           enabled: true
           worker:
@@ -24,6 +27,9 @@ spec:
               - operator: Exists
         operator:
           defaultRuntime: containerd
+          env:
+            - name: VALIDATOR_IMAGE
+              value: nvcr.io/nvidia/cloud-native/gpu-operator-validator:v24.9.0
         validator:
           enabled: true
           repository: nvcr.io/nvidia/cloud-native
