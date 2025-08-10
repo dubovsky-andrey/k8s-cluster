@@ -12,13 +12,11 @@ spec:
     helm:
       values: |
         driver:
-          enabled: true
+          enabled: false
         devicePlugin:
           enabled: true
-          repository: nvcr.io/nvidia
-          image: driver
         toolkit:
-          enabled: true
+          enabled: false
         node-feature-discovery:
           enabled: true
           worker:
@@ -28,6 +26,8 @@ spec:
           defaultRuntime: containerd
         validator:
           driver:
+            enabled: false
+          plugin:
             enabled: false
         dcgm:
           enabled: false
