@@ -47,3 +47,4 @@ spec:
       - ServerSideApply=true
       - PrunePropagationPolicy=foreground
       - PruneLast=true
+      - Replace=true
