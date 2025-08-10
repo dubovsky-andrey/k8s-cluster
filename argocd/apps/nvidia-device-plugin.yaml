@@ -25,10 +25,7 @@ spec:
         operator:
           defaultRuntime: containerd
         validator:
-          driver:
-            enabled: false
-          plugin:
-            enabled: false
+          enabled: false
         dcgm:
           enabled: false
         dcgmExporter:
