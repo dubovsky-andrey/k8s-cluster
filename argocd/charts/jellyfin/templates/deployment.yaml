@@ -28,6 +28,12 @@ spec:
                 matchLabels:
                   app: {{ include "jellyfin.name" . }}
               topologyKey: "kubernetes.io/hostname"
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: DoesNotExist
       containers:
         - name: {{ include "jellyfin.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
