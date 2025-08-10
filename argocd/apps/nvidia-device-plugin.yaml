@@ -12,7 +12,9 @@ spec:
     helm:
       values: |
         driver:
-          enabled: false
+          enabled: true
+        devicePlugin:
+          enabled: true
         toolkit:
           enabled: true
         node-feature-discovery:
