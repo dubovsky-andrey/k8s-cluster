@@ -38,6 +38,9 @@ spec:
           enabled: false
         tolerations:
           - operator: Exists
+        gfd:
+          enabled: true
+
   destination:
     server: https://kubernetes.default.svc
     namespace: nvidia
