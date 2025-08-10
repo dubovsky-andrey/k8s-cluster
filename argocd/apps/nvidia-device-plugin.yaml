@@ -27,9 +27,6 @@ spec:
               - operator: Exists
         operator:
           defaultRuntime: containerd
-          env:
-            - name: VALIDATOR_IMAGE
-              value: nvcr.io/nvidia/cloud-native/gpu-operator-validator:v24.9.0
         validator:
           enabled: true
           repository: nvcr.io/nvidia/cloud-native
