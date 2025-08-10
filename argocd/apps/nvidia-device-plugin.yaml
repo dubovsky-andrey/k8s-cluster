@@ -17,9 +17,6 @@ spec:
           enabled: true
         toolkit:
           enabled: true
-          repository: nvcr.io/nvidia/k8s
-          image: container-toolkit
-          version: v1.17.8-ubuntu20.04
         node-feature-discovery:
           enabled: true
           worker:
@@ -28,19 +25,13 @@ spec:
         operator:
           defaultRuntime: containerd
         validator:
-          enabled: true
-          repository: nvcr.io/nvidia/cloud-native
-          image: gpu-operator-validator
-          version: v24.9.0
+          enabled: false
         dcgm:
           enabled: false
         dcgmExporter:
           enabled: false
         tolerations:
           - operator: Exists
-        gfd:
-          enabled: true
-
   destination:
     server: https://kubernetes.default.svc
     namespace: nvidia
