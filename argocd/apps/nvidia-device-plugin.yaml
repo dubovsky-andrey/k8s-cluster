@@ -17,6 +17,9 @@ spec:
           enabled: true
         toolkit:
           enabled: true
+          repository: nvcr.io/nvidia/k8s
+          image: container-toolkit
+          version: v1.17.8-ubuntu20.04
         node-feature-discovery:
           enabled: true
           worker:
