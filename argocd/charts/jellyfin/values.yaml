@@ -58,7 +58,8 @@ podDisruptionBudget:
   maxUnavailable: 1
 
 nodeSelector:
-  beta.kubernetes.io/arch: amd64
+  kubernetes.io/arch: amd64
+  nvidia.com/gpu.present: "true"
 
 release:
   namespace: prod
