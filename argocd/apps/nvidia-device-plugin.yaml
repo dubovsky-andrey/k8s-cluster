@@ -26,9 +26,9 @@ spec:
           defaultRuntime: containerd
         validator:
           enabled: true
-          image:
-            repository: nvcr.io/nvidia/cloud-native/gpu-operator-validator
-            tag: v24.9.0
+          repository: nvcr.io/nvidia/cloud-native
+          image: gpu-operator-validator
+          version: v24.9.0
         dcgm:
           enabled: false
         dcgmExporter:
