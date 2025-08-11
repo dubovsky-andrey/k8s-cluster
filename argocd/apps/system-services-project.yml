@@ -12,9 +12,7 @@ spec:
 
   # Where applications can be deployed
   destinations:
-    - namespace: test
-      server: https://kubernetes.default.svc
-    - namespace: prod
+    - namespace: adguardhome
       server: https://kubernetes.default.svc
 
   clusterResourceWhitelist:
