@@ -1,0 +1,16 @@
+habib@k8s-master-1:~ $ cat jelly-node.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin-nodeport
+  namespace: prod
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  selector:
+    app: jellyfin
+  ports:
+    - port: 8096
+      targetPort: 8096
+      nodePort: 30096
+

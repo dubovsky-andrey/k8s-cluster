@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jellyfin-ingress
+  namespace: prod
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/proxy-max-temp-file-size: "0"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: jellyfin.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: jellyfin-nodeport
+            port:
+              number: 8096
+
+  # --- (optional) enable TLS when you have a cert secret ready ---
+  # tls:
+  # - hosts:
+  #     - jellyfin.local
+  #   secretName: jellyfin-tls
