@@ -20,7 +20,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: jellyfin-nodeport
+            name: jellyfin-jellyfin
             port:
               number: 8096
 
