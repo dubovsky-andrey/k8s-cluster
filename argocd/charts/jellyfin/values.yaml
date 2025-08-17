@@ -29,6 +29,11 @@ persistence:
     - nodiratime
     - rsize=1048576
     - wsize=1048576
+    - nconnect=4
+    - acregmin=30 
+    - acregmax=120
+    - acdirmin=30
+    - acdirmax=120
     - tcp
 
 nfs:
