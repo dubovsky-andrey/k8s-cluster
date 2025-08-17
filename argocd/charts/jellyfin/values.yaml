@@ -45,12 +45,12 @@ readinessProbe:
 
 resources:
   requests:
-    cpu: 2500m
-    memory: 6Gi
+    cpu: 3500m
+    memory: 18Gi
     nvidia.com/gpu: 1
   limits:
-    cpu: 4000m
-    memory: 10Gi
+    cpu: 6000m
+    memory: 22Gi
     nvidia.com/gpu: 1
     
 
