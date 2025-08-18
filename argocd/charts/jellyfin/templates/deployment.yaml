@@ -71,6 +71,8 @@ spec:
               mountPath: /movies
             - name: jellyfin-tv
               mountPath: /tv
+            - name: jellyfin-transcodes
+              mountPath: /cache/transcodes
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       volumes:
@@ -83,3 +85,7 @@ spec:
         - name: jellyfin-tv
           persistentVolumeClaim:
             claimName: jellyfin-cifs-tv-pvc
+        - name: jellyfin-transcodes
+          emptyDir:
+            medium: Memory
+            sizeLimit: "5Gi"
