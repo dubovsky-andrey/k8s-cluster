@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emby-nodeport
+  namespace: prod
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  selector:
+    app: emby
+  ports:
+    - port: 8096
+      targetPort: 8096
+      nodePort: 30096

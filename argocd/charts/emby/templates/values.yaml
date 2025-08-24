@@ -1,0 +1,78 @@
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+image:
+  repository: lscr.io/linuxserver/emby
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8096
+  loadBalancerIP: 192.168.1.55
+
+persistence:
+  enabled: true
+  createPv: true
+  size: 20Gi
+  storageClass: nfs-storage
+  accessModes:
+    - ReadWriteMany
+  reclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - noatime
+    - nodiratime
+    - rsize=1048576
+    - wsize=1048576
+    - nconnect=4
+    - acregmin=30
+    - acregmax=120
+    - acdirmin=30
+    - acdirmax=120
+    - tcp
+
+nfs:
+  server: 192.168.1.20
+  path: /volume1/nfs/k8s-data/emby
+
+securityContext:
+  fsGroup: 1000
+  runAsUser: 1000
+  runAsNonRoot: true
+
+env:
+  TZ: America/New_York
+  PUID: "1000"
+  PGID: "1000"
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+resources:
+  requests:
+    cpu: 3500m
+    memory: 18Gi
+    nvidia.com/gpu: 1
+  limits:
+    cpu: 6000m
+    memory: 22Gi
+    nvidia.com/gpu: 1
+
+podDisruptionBudget:
+  maxUnavailable: 1
+
+nodeSelector:
+  beta.kubernetes.io/arch: amd64
+
+release:
+  namespace: prod
