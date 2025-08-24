@@ -1,13 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: emby
+  name: jellyfin
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/dubovsky-andrey/k8s-cluster.git
-    path: argocd/charts/emby
+    path: argocd/charts/jellyfin
     targetRevision: stage
     helm:
       valueFiles:
