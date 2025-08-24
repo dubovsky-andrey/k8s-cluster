@@ -42,8 +42,8 @@ nfs:
 
 securityContext:
   fsGroup: 1000
-  runAsUser: 1000
-  runAsNonRoot: true
+  runAsUser: 0
+  runAsNonRoot: false
 
 env:
   TZ: America/New_York
