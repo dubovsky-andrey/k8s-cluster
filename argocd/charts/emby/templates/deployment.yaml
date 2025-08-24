@@ -51,9 +51,6 @@ spec:
           securityContext:
             runAsUser: {{ .Values.securityContext.runAsUser }}
             runAsNonRoot: {{ .Values.securityContext.runAsNonRoot }}
-            capabilities:
-              drop:
-                - ALL
           livenessProbe:
             httpGet:
               path: /
