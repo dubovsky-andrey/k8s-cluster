@@ -1,6 +1,0 @@
-apiVersion: v2
-name: plex
-description: "Helm chart for Plex (linuxserver/plex)"
-type: application
-version: 1.0.0
-appVersion: "latest"
