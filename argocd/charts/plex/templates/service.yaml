@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "plex.fullname" . }}
+  labels:
+    app: {{ include "plex.name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  {{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort") }}
+  externalTrafficPolicy: Local
+  {{- end }}
+  ports:
+    - name: web
+      protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+    - name: dlna-udp
+      protocol: UDP
+      port: 1900
+      targetPort: 1900
+    - name: companion
+      protocol: TCP
+      port: 3005
+      targetPort: 3005
+    - name: roku
+      protocol: TCP
+      port: 8324
+      targetPort: 8324
+    - name: dlna-tcp
+      protocol: TCP
+      port: 32469
+      targetPort: 32469
+    - name: gdm-32410
+      protocol: UDP
+      port: 32410
+      targetPort: 32410
+    - name: gdm-32412
+      protocol: UDP
+      port: 32412
+      targetPort: 32412
+    - name: gdm-32413
+      protocol: UDP
+      port: 32413
+      targetPort: 32413
+    - name: gdm-32414
+      protocol: UDP
+      port: 32414
+      targetPort: 32414
+    - name: bonjour
+      protocol: UDP
+      port: 5353
+      targetPort: 5353
+  selector:
+    app: {{ include "plex.name" . }}

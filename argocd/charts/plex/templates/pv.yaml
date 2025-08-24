@@ -1,0 +1,20 @@
+{{- if and .Values.persistence.enabled .Values.persistence.createPv }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "plex.fullname" . }}-pv
+spec:
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 2 }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.reclaimPolicy }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- if .Values.persistence.mountOptions }}
+  mountOptions:
+    {{- toYaml .Values.persistence.mountOptions | nindent 2 }}
+  {{- end }}
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path }}
+{{- end }}
